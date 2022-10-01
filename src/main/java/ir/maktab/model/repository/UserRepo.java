@@ -18,7 +18,7 @@ public class UserRepo implements PersonRepo{
     }
     private final DBhelper dbhelper = DBhelper.getInstance();
     @Override
-    public boolean signIn(User user) throws SQLException {
+    public void signIn(User user) throws SQLException {
         String sql = "SELECT * FROM user_table WHERE username = ? AND password = ?";
         PreparedStatement preparedStatement = dbhelper.getConnection().prepareStatement(sql);
         preparedStatement.setString(1,user.getUsername());
@@ -27,7 +27,6 @@ public class UserRepo implements PersonRepo{
         if(!resultSet.next())
             throw new UserNotFoundException("Invalid Username of Password");
         dbhelper.closeConnection();
-        return true;
     }
 
     @Override

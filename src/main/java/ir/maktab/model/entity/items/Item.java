@@ -1,5 +1,6 @@
 package ir.maktab.model.entity.items;
 
+import ir.maktab.util.exceptions.ItemUnavailableException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,9 +12,9 @@ public abstract class Item {
     private double price;
     private String description;
     private int count;
-    public boolean isAvailable(){
+    public boolean isAvailable() throws ItemUnavailableException {
         if(this.count == 0)
-            throw new RuntimeException("This Item is not currently available...");
+            throw new ItemUnavailableException("This Item is not currently available...");
         return true;
     }
 }
