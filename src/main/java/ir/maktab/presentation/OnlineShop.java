@@ -16,15 +16,22 @@ public class OnlineShop {
         signUp();
     }
 
-    public void signUp() {
+    public boolean signUp() {
+        boolean signUpResult = false;
         User user = new User(null,null,null);
+        //Validate username & password
         try {
-            if(userService.signUp(user))
+            if(userService.signUp(user)) {
                 System.out.println("Signed Up Successfully");
-            else
+                signUpResult = true;
+            }
+            else {
                 System.out.println("Unable to Sign Up, try again later");
+            }
         } catch (RuntimeException e) {
             System.err.println(e.getMessage());
+        }finally {
+            return signUpResult;
         }
     }
 }
