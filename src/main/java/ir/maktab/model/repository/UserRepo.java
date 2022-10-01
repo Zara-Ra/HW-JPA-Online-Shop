@@ -11,6 +11,11 @@ import java.sql.SQLException;
 
 public class UserRepo implements PersonRepo{
 
+    private UserRepo(){}
+    private static final UserRepo instance = new UserRepo();
+    public static UserRepo getInstance(){
+        return instance;
+    }
     private final DBhelper dbhelper = DBhelper.getInstance();
     @Override
     public boolean signIn(User user) throws SQLException {
@@ -35,10 +40,5 @@ public class UserRepo implements PersonRepo{
             throw new UserNotSignedUpException("Unable to Sign up");
         dbhelper.closeConnection();
         return user;
-    }
-
-    @Override
-    public boolean signOut(User user) {
-        return false;
     }
 }
