@@ -3,6 +3,7 @@ package ir.maktab.model.repository;
 import ir.maktab.model.entity.User;
 import ir.maktab.util.DBhelper;
 import ir.maktab.util.exceptions.UserNotFoundException;
+import ir.maktab.util.exceptions.UserNotSignedUpException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,8 +26,15 @@ public class UserRepo implements PersonRepo{
     }
 
     @Override
-    public User signUp(User user) {
-
+    public User signUp(User user) throws SQLException {
+        String sql = "INSERT INTO user_table VALUES (?,?)";
+        PreparedStatement preparedStatement = dbhelper.getConnection().prepareStatement(sql);
+        preparedStatement.setString(1, user.getUsername());
+        preparedStatement.setString(2, user.getPassword());
+        if(preparedStatement.executeUpdate() == 0)
+            throw new UserNotSignedUpException("Unable to Sign up");
+        dbhelper.closeConnection();
+        return user;
     }
 
     @Override
