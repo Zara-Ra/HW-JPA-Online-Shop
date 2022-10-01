@@ -9,6 +9,11 @@ public class DBhelper {
     private static final String USER = "postgres";
     private static final String PASS = "zara12";
 
+    private DBhelper(){}
+    private static final DBhelper instance = new DBhelper();
+    public static DBhelper getInstance(){
+        return instance;
+    }
     private Connection connection;
     public  Connection getConnection() {
 
