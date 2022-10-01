@@ -25,7 +25,7 @@ public class UserRepo implements PersonRepo{
         preparedStatement.setString(2,user.getPassword());
         ResultSet resultSet = preparedStatement.executeQuery();
         if(!resultSet.next())
-            throw new UserNotFoundException("Invalid Username of Password");
+            throw new UserNotFoundException("Invalid Username or Password");
         dbhelper.closeConnection();
     }
 

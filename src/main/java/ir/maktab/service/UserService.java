@@ -22,11 +22,12 @@ public class UserService implements PersonService {
 
     @Override
     public boolean signIn(User user) {
+        checkUser(user);
         try {
             userRepo.signIn(user);
             return true;
         } catch (SQLException e) {
-            throw new DataBaseException(e.getMessage());
+            throw new DataBaseException(e.getMessage());//TODO what kind of exception could i handel here?
         } catch (UserNotFoundException e) {
             return false;
         }
@@ -34,12 +35,7 @@ public class UserService implements PersonService {
 
     @Override
     public boolean signUp(User user) {
-        if(user == null)
-            throw new NullPointerException("The User Can not be null");
-        if(user.getUsername() == null)
-            throw new IllegalArgumentException("Username Can not be empty");
-        if(user.getPassword() == null)
-            throw new IllegalArgumentException("Password Can not be empty");
+        checkUser(user);
         try {
             userRepo.signUp(user);
             return true;
@@ -48,6 +44,15 @@ public class UserService implements PersonService {
         } catch (UserNotSignedUpException e) {
             return false;
         }
+    }
+
+    private void checkUser(User user) {
+        if(user == null)
+            throw new NullPointerException("The User Can not be null");
+        if(user.getUsername() == null)
+            throw new IllegalArgumentException("Username Can not be empty");
+        if(user.getPassword() == null)
+            throw new IllegalArgumentException("Password Can not be empty");
     }
 
     @Override
