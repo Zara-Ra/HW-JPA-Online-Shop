@@ -1,0 +1,10 @@
+                    Item
+            id name price description
+
+Electronics         Shoes                       Readable
+model           size color gender               cover age
+
+TV     Radio       Formal Casual                Book    Mag
+inch   color        heel   type            author pub   pubDate
+
+
