@@ -15,7 +15,16 @@ public class OnlineShop {
     public void welcome() {
         //signUp();
         signIn();
-        signOut();
+        //signOut();
+        printAvailableItems();
+        //addItemToShoppingCard();
+        //deleteItemFromShoppingCard();
+        //printShoppingCard();
+        //confirmPurchase();
+    }
+
+    private void printAvailableItems() {
+
     }
 
     private void signOut() {

@@ -7,5 +7,8 @@ import lombok.Setter;
 @Setter
 public class TV extends Electronics{
     private int inch;
-
+    public TV(String name, double price, String description, int count, String model, int inch) {
+        super(name, price, description, count, model);
+        this.inch = inch;
+    }
 }

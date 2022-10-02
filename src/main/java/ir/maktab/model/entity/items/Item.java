@@ -12,6 +12,14 @@ public abstract class Item {
     private double price;
     private String description;
     private int count;
+
+    public Item(String name, double price, String description, int count) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.count = count;
+    }
+
     public boolean isAvailable() throws ItemUnavailableException {
         if(this.count == 0)
             throw new ItemUnavailableException("This Item is not currently available...");

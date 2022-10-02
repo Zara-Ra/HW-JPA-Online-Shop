@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Getter
 @Setter
-public class ShoppingCart {
+public class ShoppingCard {
     User user;
     List<Item> shoppingList = new ArrayList<>();
     ConfirmStatus confirmStatus;

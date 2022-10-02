@@ -10,10 +10,10 @@ import lombok.Setter;
 public class User {
     private String username;
     private String password;
-    private ShoppingCart shoppingCart;//TODO is it necessary?
+    private ShoppingCard shoppingCard;//TODO is it necessary?
 
     @Override
     public String toString() {
-        return "Username: " + username + " Shopping Card: "+ shoppingCart;
+        return "Username: " + username + " Shopping Card: "+ shoppingCard;
     }
 }
