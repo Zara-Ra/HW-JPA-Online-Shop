@@ -5,12 +5,14 @@ import ir.maktab.model.enums.ConfirmStatus;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 @Setter
 public class ShoppingCard {
-    User user;
-    List<Item> shoppingList = new ArrayList<>();
-    ConfirmStatus confirmStatus;
+    private User user;
+    //List<Item> shoppingList = new ArrayList<>();
+    private Map<Item, Integer> shoppingItemsMap = new HashMap<>();
+    private ConfirmStatus confirmStatus;
 }
