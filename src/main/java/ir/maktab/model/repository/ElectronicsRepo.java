@@ -12,13 +12,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ElectronicsRepo<T extends Electronics> implements ItemRepo<T> {
-    /*private ElectronicsRepo(){}//TODO Singelton is this wrong?
+public class ElectronicsRepo<T extends Electronics> implements ItemRepo<T> {
+    private ElectronicsRepo(){}//TODO Singelton is this wrong?
     private static final ElectronicsRepo instance = new ElectronicsRepo<>();
     public static ElectronicsRepo getInstance(){
         return instance;
     }
-    */
+
     private final DBhelper dbhelper = DBhelper.getInstance();
     @Override
     public List<T> availableItems(T item) throws SQLException {

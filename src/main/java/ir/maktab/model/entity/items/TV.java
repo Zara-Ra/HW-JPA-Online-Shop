@@ -11,4 +11,8 @@ public class TV extends Electronics{
         super(name, price, description, count, model);
         this.inch = inch;
     }
+
+    public TV() {
+        super();
+    }
 }

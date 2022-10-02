@@ -1,11 +1,13 @@
 package ir.maktab.presentation;
 
 import ir.maktab.model.entity.User;
+import ir.maktab.service.ItemService;
 import ir.maktab.service.UserService;
 import ir.maktab.util.exceptions.DataBaseException;
 
 public class OnlineShop {
     private final UserService userService = UserService.getInstance();
+    private final ItemService itemService = ItemService.getInstance();
     private User user;
     public static void main(String[] args) {
         OnlineShop onlineShop = new OnlineShop();
@@ -24,7 +26,7 @@ public class OnlineShop {
     }
 
     private void printAvailableItems() {
-
+        System.out.println(itemService.availableItems());
     }
 
     private void signOut() {

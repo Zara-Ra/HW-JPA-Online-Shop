@@ -3,9 +3,11 @@ package ir.maktab.model.entity.items;
 import ir.maktab.util.exceptions.ItemUnavailableException;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public abstract class Item {
     private int ID;
     private String name; //title of book,brand name
@@ -18,6 +20,9 @@ public abstract class Item {
         this.price = price;
         this.description = description;
         this.count = count;
+    }
+
+    public Item() {
     }
 
     public boolean isAvailable() throws ItemUnavailableException {

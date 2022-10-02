@@ -12,5 +12,8 @@ public abstract class Electronics extends Item{
         this.model = model;
     }
 
+    public Electronics() {
+    }
+
     private String model;
 }
