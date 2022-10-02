@@ -8,3 +8,5 @@ TV     Radio       Formal Casual                Book    Mag
 inch   color        heel   type            author pub   pubDate
 
 
+one item table
+id name price description count ++ type(enum)

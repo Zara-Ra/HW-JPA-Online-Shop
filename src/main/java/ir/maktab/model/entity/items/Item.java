@@ -9,7 +9,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public abstract class Item {
-    private int ID;
     private String name; //title of book,brand name
     private double price;
     private String description;

@@ -1,16 +1,17 @@
 package ir.maktab.model.repository;
 
 import ir.maktab.model.entity.items.Item;
+import ir.maktab.util.exceptions.ItemUnavailableException;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public interface ItemRepo <T extends Item>{
-    List<T> availableItems(T item) throws SQLException;
+
+    List<T> availableItems() throws SQLException;
 
     boolean editCount(T item, int num) throws SQLException;
 
-    T findItemByName(String name);
-    T findItemByID(int ID);
+    T findItemByName(T item) throws SQLException, ItemUnavailableException;
 
 }

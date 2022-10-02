@@ -2,10 +2,12 @@ package ir.maktab.model.entity.items;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-public abstract class Electronics extends Item{
+@ToString
+public class Electronics extends Item{
 
     public Electronics(String name, double price, String description, int count, String model) {
         super(name, price, description, count);
