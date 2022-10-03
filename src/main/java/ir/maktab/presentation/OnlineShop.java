@@ -101,7 +101,7 @@ public class OnlineShop {
         user.getShoppingCard().setConfirmStatus(confirmStatus);
         shoppingCardService.confirmShopping(user.getShoppingCard());
         if (confirmStatus.equals(ConfirmStatus.CONFIRMED)) {
-            //itemService.decreaseItems();
+            itemService.updateShopItemsCount(user.getShoppingCard(),shopItems);
         }
     }
 
@@ -254,6 +254,8 @@ public class OnlineShop {
             if (userService.signIn(user)) {
                 System.out.println("Signed In Successfully");
                 signInResult = true;
+                user.getShoppingCard().setUser(user);
+                user.getShoppingCard().setConfirmStatus(ConfirmStatus.PENDING);
             } else {
                 System.out.println("Unable to Sign In, try again later");
             }

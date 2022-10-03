@@ -12,7 +12,8 @@ public abstract class AbstractItemRepo<T extends Item> implements ItemRepo<T> {
     private final DBhelper dbhelper = DBhelper.getInstance();
     @Override
     public boolean editCount(T item, int num) throws SQLException {
-        String sql = "UPDATE item_electronics SET count = ? WHERE name = ?";//todo item
+        String tableName = item.getType().toPrdoductCategory().tableName();
+        String sql = "UPDATE "+tableName+" SET count = ? WHERE name = ?";
         PreparedStatement preparedStatement = dbhelper.getConnection().prepareStatement(sql);
         preparedStatement.setInt(1, num);
         preparedStatement.setString(2, item.getName());
