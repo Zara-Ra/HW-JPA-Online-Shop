@@ -133,15 +133,19 @@ public class OnlineShop {
                 switch (choice) {
                     case 1:
                         deletedNumOfItems = entry.getValue();
+                        itemService.increaseShopItemsCount(shopItems,entry.getKey(),deletedNumOfItems);
                         shoppingCardService.removeItem(it);
-                        increaseShopItemsCount(entry.getKey(),deletedNumOfItems);
                         break;
                     case 2:
                         int validNumItem = entry.getValue() - 1;
-                        if (validNumItem == 0)
+                        if (validNumItem == 0) {
+                            itemService.increaseShopItemsCount(shopItems, entry.getKey(),deletedNumOfItems);
                             shoppingCardService.removeItem(it);
-                        else if (validNumItem == 1)
+                        }
+                        else if (validNumItem == 1) {
+                            itemService.increaseShopItemsCount(shopItems, entry.getKey(),deletedNumOfItems);
                             shoppingCardService.editNumOfItem(shoppingItemMap, entry.getKey(), 1);
+                        }
                         else {
                             System.out.println("How many Items do you need? ( 1 to " + validNumItem + " )");
                             int numOfItems = Integer.parseInt(scanner.nextLine());
@@ -150,9 +154,9 @@ public class OnlineShop {
                                 numOfItems = Integer.parseInt(scanner.nextLine());
                             }
                             deletedNumOfItems = entry.getValue() - numOfItems;
+                            itemService.increaseShopItemsCount(shopItems, entry.getKey(),deletedNumOfItems);
                             shoppingCardService.editNumOfItem(shoppingItemMap, entry.getKey(), numOfItems);
                         }
-                        increaseShopItemsCount(entry.getKey(),deletedNumOfItems);
                         break;
                     case 3:
                         break;
@@ -161,16 +165,6 @@ public class OnlineShop {
                         break;
                 }
 
-            }
-        }
-    }
-
-    private void increaseShopItemsCount(Item item,Integer increaseNumber) {
-        List<Item> itemList = shopItems.get(item.getType());
-        for (int i = 0; i <itemList.size() ; i++) {
-            if(item.equals(itemList.get(i))){
-                itemList.get(i).increaseCount(increaseNumber);
-                return;
             }
         }
     }
@@ -215,17 +209,15 @@ public class OnlineShop {
             if(itemList.get(itemNum).getCount() == 0){
                 throw new ItemUnavailableException("No More of this Item is Available");
             }
+            shoppingCardService.addItem(user, itemList.get(itemNum));
         } catch (NumberFormatException e) {
             System.err.println("Invalid Number Entered");
         } catch (ItemUnavailableException e){
             System.err.println(e.getMessage());
         }
-        try {
-            shoppingCardService.addItem(user, itemList.get(itemNum));
-        } catch (ShoppingCardFullExcepiton e) {
+         catch (ShoppingCardFullExcepiton e) {
             System.err.println(e.getMessage());
         }
-        itemList.get(itemNum).countMinus();
     }
 
     private List<Item> itemsByCategory(ProductCategory productCategory) {

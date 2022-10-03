@@ -7,10 +7,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @AllArgsConstructor
-@EqualsAndHashCode
+
 public abstract class Item {
     private ItemType type;
     private String name; //title of book,brand name
@@ -18,7 +20,7 @@ public abstract class Item {
     private String description;
     private int count;
 
-    /*@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Item)) return false;
@@ -29,7 +31,7 @@ public abstract class Item {
     @Override
     public int hashCode() {
         return Objects.hash(getType(), getName(), getPrice(), getDescription());
-    }*/
+    }
 
     public Item() {
     }

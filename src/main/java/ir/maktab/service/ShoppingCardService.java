@@ -37,7 +37,7 @@ public class ShoppingCardService {
             numOfItem++;
         }
         shoppingItemsMap.put(item, numOfItem);
-        item.setCount(item.getCount()-1);//todo is it necessary
+        item.countMinus();
         return true;
     }
 

@@ -10,6 +10,7 @@ import ir.maktab.util.exceptions.DataBaseException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ItemService {
     private ItemService() {
@@ -27,7 +28,7 @@ public class ItemService {
 
     public List<Item> itemsByCategory(ProductCategory productCategory) {
         List<Item> itemList = new ArrayList<>();
-        switch (productCategory){
+        switch (productCategory) {
             case ELECTRONICS:
                 try {
                     itemList.addAll(electronicsRepo.availableItems());
@@ -51,5 +52,15 @@ public class ItemService {
                 break;
         }
         return itemList;
+    }
+
+    public void increaseShopItemsCount(Map<ProductCategory, List<Item>> shopItems, Item item, Integer increaseNumber) {
+        List<Item> itemList = shopItems.get(item.getType().toPrdoductCategory());
+        for (int i = 0; i < itemList.size(); i++) {
+            if (item.equals(itemList.get(i))) {
+                itemList.get(i).increaseCount(increaseNumber);
+                return;
+            }
+        }
     }
 }
