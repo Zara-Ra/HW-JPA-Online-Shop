@@ -20,7 +20,7 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
     private DBhelper dBhelper = DBhelper.getInstance();
     @Override
     public List<Electronics> availableItems() throws SQLException {
-        String sql = "SELECT name,count,price,description,model,type FROM item_electronics WHERE count > 0";//todo
+        String sql = "SELECT name,count,price,description,brand,type FROM item_electronics WHERE count > 0";//todo
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Electronics> items = new ArrayList<>();
@@ -30,7 +30,7 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
             item.setCount(resultSet.getInt(2));
             item.setPrice(resultSet.getDouble(3));
             item.setDescription(resultSet.getString(4));
-            item.setModel(resultSet.getString(5));
+            item.setBrand(resultSet.getString(5));
             item.setType(ItemType.valueOf(resultSet.getString(6)));
             items.add(item);
         }

@@ -53,9 +53,9 @@ public class ShoppingCardService {
         try {
             shoppingCardRepo.confirmShopping(shoppingCard);
             int id = shoppingCardRepo.getID(shoppingCard);
-            shoppingCardRepo.addShoppingCardItems(id,shoppingCard.getShoppingItemsMap());
-
-
+            for (Map.Entry<Item, Integer> entry : shoppingCard.getShoppingItemsMap().entrySet()) {
+                shoppingCardRepo.addShoppingCardItem(id, entry);
+            }
         } catch (SQLException e) {
             throw new DataBaseException("Something wrong with the database");
         }

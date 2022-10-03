@@ -1,9 +1,7 @@
 package ir.maktab.model.repository;
 
 import ir.maktab.model.entity.ShoppingCard;
-import ir.maktab.model.entity.User;
 import ir.maktab.model.entity.items.Item;
-import ir.maktab.model.enums.ConfirmStatus;
 import ir.maktab.util.DBhelper;
 
 import java.sql.Date;
@@ -60,15 +58,15 @@ public class ShoppingCardRepo {
         return resultSet.getInt(1);
     }
 
-    public void addShoppingCardItems(int id,Map<Item, Integer> shoppingItemsMap) throws SQLException {
-        for (Map.Entry<Item, Integer> entry : shoppingItemsMap.entrySet()) {
-            String sql = "INSERT INTO shopping_items(shopping_card_id,item_name,item_count,item_type) VALUES(?,?,?,?)";
+    public void addShoppingCardItem(int id, Map.Entry<Item, Integer> entry) throws SQLException {
+
+            String sql = "INSERT INTO shopping_items ( shopping_card_id , item_name , item_count , item_type ) VALUES (?,?,?,?)";
             PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
             preparedStatement.setInt(1,id);
             preparedStatement.setString(2,entry.getKey().getName());
             preparedStatement.setInt(3,entry.getValue());
             preparedStatement.setString(4,entry.getKey().getType().toString());
             preparedStatement.executeUpdate();
-        }
+
     }
 }

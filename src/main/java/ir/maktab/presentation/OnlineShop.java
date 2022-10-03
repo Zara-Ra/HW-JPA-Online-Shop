@@ -94,7 +94,6 @@ public class OnlineShop {
                 welcome();
                 break;
         }
-        //searchItem();
     }
 
     private void confirmPurchase(ConfirmStatus confirmStatus) {

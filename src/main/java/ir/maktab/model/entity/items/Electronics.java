@@ -13,13 +13,13 @@ public class Electronics extends Item {
     public Electronics() {
     }
 
-    private String model;
+    private String brand;
 
     @Override
     public String toString() {
         return "\n*** " + getType() +" *** "+
-                " Brand: " + getName() +
-                " Model: " + this.model +
+                " Model: " + getName() +
+                " Brand: " + this.brand +
                 " Price: " + getPrice() +
                 " Description: " + getDescription();
     }
