@@ -8,6 +8,7 @@ import ir.maktab.model.enums.ProductCategory;
 import ir.maktab.service.ItemService;
 import ir.maktab.service.ShoppingCardService;
 import ir.maktab.service.UserService;
+import ir.maktab.util.exceptions.ItemUnavailableException;
 import ir.maktab.util.exceptions.ShoppingCardFullExcepiton;
 
 import java.util.*;
@@ -115,7 +116,7 @@ public class OnlineShop {
         }
     }
 
-    private void deleteItemFromShoppingCard() {//todo count of shopItems
+    private void deleteItemFromShoppingCard() {
         Map<Item, Integer> shoppingItemMap = user.getShoppingCard().getShoppingItemsMap();
         if (shoppingItemMap.size() == 0) {
             System.out.println("Shopping Card is Empty");
@@ -128,9 +129,12 @@ public class OnlineShop {
                 System.out.println("Press 3 --> Next Item");
                 System.out.println("Press 4 --> Back");
                 int choice = Integer.parseInt(scanner.nextLine());
+                Integer deletedNumOfItems = 1;
                 switch (choice) {
                     case 1:
+                        deletedNumOfItems = entry.getValue();
                         shoppingCardService.removeItem(it);
+                        increaseShopItemsCount(entry.getKey(),deletedNumOfItems);
                         break;
                     case 2:
                         int validNumItem = entry.getValue() - 1;
@@ -145,8 +149,10 @@ public class OnlineShop {
                                 System.out.println("Enter a value between 1 and " + validNumItem);
                                 numOfItems = Integer.parseInt(scanner.nextLine());
                             }
+                            deletedNumOfItems = entry.getValue() - numOfItems;
                             shoppingCardService.editNumOfItem(shoppingItemMap, entry.getKey(), numOfItems);
                         }
+                        increaseShopItemsCount(entry.getKey(),deletedNumOfItems);
                         break;
                     case 3:
                         break;
@@ -155,6 +161,16 @@ public class OnlineShop {
                         break;
                 }
 
+            }
+        }
+    }
+
+    private void increaseShopItemsCount(Item item,Integer increaseNumber) {
+        List<Item> itemList = shopItems.get(item.getType());
+        for (int i = 0; i <itemList.size() ; i++) {
+            if(item.equals(itemList.get(i))){
+                itemList.get(i).increaseCount(increaseNumber);
+                return;
             }
         }
     }
@@ -196,14 +212,20 @@ public class OnlineShop {
             if (itemNum < 0 || itemNum >= itemList.size()) {
                 throw new NumberFormatException();
             }
+            if(itemList.get(itemNum).getCount() == 0){
+                throw new ItemUnavailableException("No More of this Item is Available");
+            }
         } catch (NumberFormatException e) {
             System.err.println("Invalid Number Entered");
+        } catch (ItemUnavailableException e){
+            System.err.println(e.getMessage());
         }
         try {
             shoppingCardService.addItem(user, itemList.get(itemNum));
         } catch (ShoppingCardFullExcepiton e) {
             System.err.println(e.getMessage());
         }
+        itemList.get(itemNum).countMinus();
     }
 
     private List<Item> itemsByCategory(ProductCategory productCategory) {
