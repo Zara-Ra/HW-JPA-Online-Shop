@@ -4,6 +4,7 @@ import ir.maktab.model.entity.items.Electronics;
 import ir.maktab.model.entity.items.Readable;
 import ir.maktab.model.enums.AgeRange;
 import ir.maktab.model.enums.CoverType;
+import ir.maktab.model.enums.ItemType;
 import ir.maktab.util.DBhelper;
 
 import java.sql.PreparedStatement;
@@ -21,7 +22,7 @@ public class ReadableRepo extends AbstractItemRepo<Readable> {
     private DBhelper dBhelper = DBhelper.getInstance();
     @Override
     public List<Readable> availableItems() throws SQLException {
-        String sql = "SELECT name,count,price,description,cover,age_range,num_page FROM item_readable WHERE count > 0";//todo
+        String sql = "SELECT name,count,price,description,cover,age_range,num_page,type FROM item_readable WHERE count > 0";//todo
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Readable> items = new ArrayList<>();
@@ -34,8 +35,7 @@ public class ReadableRepo extends AbstractItemRepo<Readable> {
             item.setCover(CoverType.valueOf(resultSet.getString(5)));
             item.setAgeRange(AgeRange.valueOf(resultSet.getString(6)));
             item.setNumOfPage(resultSet.getInt(7));
-            //publisher
-            //pub_date
+            item.setType(ItemType.valueOf(resultSet.getString(8)));
             items.add(item);
         }
         return items;

@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @AllArgsConstructor
-@ToString
+
 public abstract class Item {
     private ItemType type;
     private String name; //title of book,brand name

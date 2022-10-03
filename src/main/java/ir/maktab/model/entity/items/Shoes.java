@@ -8,9 +8,20 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 public class Shoes extends Item{
     private int size;
     private Color color;
     private Gender gender;
+
+    @Override
+    public String toString() {
+        return "\n*** " + getType() +" *** "+
+                " Brand: " + getName() +
+                " Size: " + this.size +
+                " Color: "+this.color+
+                " Gender: "+this.gender+
+                " Price: " + getPrice() +
+                " Description: " + getDescription();
+
+    }
 }

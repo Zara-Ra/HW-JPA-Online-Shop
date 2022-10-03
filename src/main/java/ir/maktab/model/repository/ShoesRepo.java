@@ -5,6 +5,7 @@ import ir.maktab.model.entity.items.Readable;
 import ir.maktab.model.entity.items.Shoes;
 import ir.maktab.model.enums.Color;
 import ir.maktab.model.enums.Gender;
+import ir.maktab.model.enums.ItemType;
 import ir.maktab.util.DBhelper;
 
 import java.sql.PreparedStatement;
@@ -23,7 +24,7 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
 
     @Override
     public List<Shoes> availableItems() throws SQLException {
-        String sql = "SELECT name,count,price,description,color,gender,size FROM item_shoes WHERE count > 0";//todo
+        String sql = "SELECT name,count,price,description,color,gender,size,type FROM item_shoes WHERE count > 0";//todo
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Shoes> items = new ArrayList<>();
@@ -36,8 +37,7 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
             item.setColor(Color.valueOf(resultSet.getString(5)));
             item.setGender(Gender.valueOf(resultSet.getString(6)));
             item.setSize(resultSet.getInt(7));
-            //heel
-            //casual type
+            item.setType(ItemType.valueOf(resultSet.getString(8)));
             items.add(item);
         }
         return items;
