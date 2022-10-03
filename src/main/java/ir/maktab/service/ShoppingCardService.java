@@ -1,10 +1,14 @@
 package ir.maktab.service;
 
+import ir.maktab.model.entity.ShoppingCard;
 import ir.maktab.model.entity.User;
 import ir.maktab.model.entity.items.Item;
+import ir.maktab.model.enums.ConfirmStatus;
 import ir.maktab.model.repository.ShoppingCardRepo;
+import ir.maktab.util.exceptions.DataBaseException;
 import ir.maktab.util.exceptions.ShoppingCardFullExcepiton;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +37,7 @@ public class ShoppingCardService {
             numOfItem++;
         }
         shoppingItemsMap.put(item, numOfItem);
+        item.setCount(item.getCount()-1);//todo is it necessary
         return true;
     }
 
@@ -44,7 +49,16 @@ public class ShoppingCardService {
         return new ArrayList<>();
     }
 
-    public boolean confirmShopping() {//here i will enter the shoppingcard info in to the database, should also be called from signout
+    public boolean confirmShopping(ShoppingCard shoppingCard) {
+        try {
+            shoppingCardRepo.confirmShopping(shoppingCard);
+            int id = shoppingCardRepo.getID(shoppingCard);
+            shoppingCardRepo.addShoppingCardItems(id,shoppingCard.getShoppingItemsMap());
+
+
+        } catch (SQLException e) {
+            throw new DataBaseException("Something wrong with the database");
+        }
         return true;
     }
 

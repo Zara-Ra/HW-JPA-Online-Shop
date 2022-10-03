@@ -3,16 +3,14 @@ package ir.maktab.presentation;
 import ir.maktab.model.entity.ShoppingCard;
 import ir.maktab.model.entity.User;
 import ir.maktab.model.entity.items.Item;
+import ir.maktab.model.enums.ConfirmStatus;
 import ir.maktab.model.enums.ProductCategory;
 import ir.maktab.service.ItemService;
 import ir.maktab.service.ShoppingCardService;
 import ir.maktab.service.UserService;
 import ir.maktab.util.exceptions.ShoppingCardFullExcepiton;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import static java.lang.System.exit;
 
@@ -22,7 +20,8 @@ public class OnlineShop {
     private final ShoppingCardService shoppingCardService = ShoppingCardService.getInstance();
     private Scanner scanner = new Scanner(System.in);
     private User user;
-
+    //private List<Item> shopItemList = new ArrayList<>();
+    private Map<ProductCategory,List<Item>> shopItems = new HashMap<>();
     public void welcome() {
         System.out.println("---------------------------------------------");
         System.out.println("Press 1  --> SignIn");
@@ -80,7 +79,6 @@ public class OnlineShop {
                 break;
             case 3:
                 deleteItemFromShoppingCard();
-                //decreaseItemNumFromShoppingCard();
                 secondMenu();
                 break;
             case 4:
@@ -88,15 +86,22 @@ public class OnlineShop {
                 secondMenu();
                 break;
             case 5:
-                //confirmPurchase();
+                confirmPurchase(ConfirmStatus.CONFIRMED);
                 secondMenu();
                 break;
             case 6:
                 welcome();
                 break;
         }
-        //printAvailableItems();
         //searchItem();
+    }
+
+    private void confirmPurchase(ConfirmStatus confirmStatus) {
+        user.getShoppingCard().setConfirmStatus(confirmStatus);
+        shoppingCardService.confirmShopping(user.getShoppingCard());
+        if (confirmStatus.equals(ConfirmStatus.CONFIRMED)) {
+            //itemService.decreaseItems();
+        }
     }
 
     private void printShoppingCard() {
@@ -110,7 +115,7 @@ public class OnlineShop {
         }
     }
 
-    private void deleteItemFromShoppingCard() {
+    private void deleteItemFromShoppingCard() {//todo count of shopItems
         Map<Item, Integer> shoppingItemMap = user.getShoppingCard().getShoppingItemsMap();
         if (shoppingItemMap.size() == 0) {
             System.out.println("Shopping Card is Empty");
@@ -185,15 +190,14 @@ public class OnlineShop {
         List<Item> itemList = itemsByCategory(productCategory);
         printItems(itemList);
         System.out.println("Enter The Item Number to Add: ");
-        int itemNum;
+        int itemNum = 0;
         try {
             itemNum = Integer.parseInt(scanner.nextLine());
-            if(itemNum<0 || itemNum >= itemList.size()){
+            if (itemNum < 0 || itemNum >= itemList.size()) {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
             System.err.println("Invalid Number Entered");
-            return;
         }
         try {
             shoppingCardService.addItem(user, itemList.get(itemNum));
@@ -203,8 +207,10 @@ public class OnlineShop {
     }
 
     private List<Item> itemsByCategory(ProductCategory productCategory) {
-        List<Item> itemList = itemService.itemsByCategory(productCategory);
-        return itemList;
+        if(!shopItems.containsKey(productCategory)) {
+             shopItems.put(productCategory ,itemService.itemsByCategory(productCategory));
+        }
+        return shopItems.get(productCategory);
     }
 
     private void printItems(List<Item> itemList) {
@@ -251,6 +257,8 @@ public class OnlineShop {
         try {
             if (userService.signUp(user)) {
                 System.out.println("Signed Up Successfully");
+                user.getShoppingCard().setUser(user);
+                user.getShoppingCard().setConfirmStatus(ConfirmStatus.PENDING);
                 signUpResult = true;
             } else {
                 System.out.println("Unable to Sign Up, try again later");
