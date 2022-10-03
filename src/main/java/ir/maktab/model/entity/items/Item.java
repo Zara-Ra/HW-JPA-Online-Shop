@@ -1,25 +1,22 @@
 package ir.maktab.model.entity.items;
 
+import ir.maktab.model.enums.ItemType;
 import ir.maktab.util.exceptions.ItemUnavailableException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @ToString
 public abstract class Item {
+    private ItemType type;
     private String name; //title of book,brand name
     private double price;
     private String description;
     private int count;
-
-    public Item(String name, double price, String description, int count) {
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.count = count;
-    }
 
     public Item() {
     }

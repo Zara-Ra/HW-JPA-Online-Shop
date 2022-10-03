@@ -1,6 +1,7 @@
 package ir.maktab.service;
 
 import ir.maktab.model.entity.items.Item;
+import ir.maktab.model.enums.ItemType;
 import ir.maktab.model.repository.ElectronicsRepo;
 import ir.maktab.model.repository.ReadableRepo;
 import ir.maktab.model.repository.ShoesRepo;
@@ -24,7 +25,19 @@ public class ItemService {
     ReadableRepo readableRepo = ReadableRepo.getInstance();
     ShoesRepo shoesRepo = ShoesRepo.getInstance();
 
-    public List<Item> availableItems() {
+    public List<Item> availableItems(ItemType type) {
+        switch (type){
+            case TV:
+            case RADIO:
+                break;
+            case BOOK:
+            case MAGAZINE:
+                break;
+            case FORMAL:
+            case CASUAL:
+                break;
+
+        }
         List<Item> itemList = new ArrayList<>();
         try {
             itemList.addAll(electronicsRepo.availableItems());

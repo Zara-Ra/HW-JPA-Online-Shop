@@ -23,7 +23,7 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
 
     @Override
     public List<Shoes> availableItems() throws SQLException {
-        String sql = "SELECT name,count,price,description,color,gender,size,heel,casual_type FROM item_shoes WHERE count > 0";//todo
+        String sql = "SELECT name,count,price,description,color,gender,size FROM item_shoes WHERE count > 0";//todo
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Shoes> items = new ArrayList<>();

@@ -12,4 +12,5 @@ import lombok.ToString;
 public class Readable extends Item{
     private CoverType cover;
     private AgeRange ageRange;
+    private int numOfPage;
 }

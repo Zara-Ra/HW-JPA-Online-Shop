@@ -19,7 +19,7 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
     private DBhelper dBhelper = DBhelper.getInstance();
     @Override
     public List<Electronics> availableItems() throws SQLException {
-        String sql = "SELECT name,count,price,description,model,inch,color FROM item_electronics WHERE count > 0";//todo
+        String sql = "SELECT name,count,price,description,model FROM item_electronics WHERE count > 0";//todo
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Electronics> items = new ArrayList<>();

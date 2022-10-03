@@ -21,7 +21,7 @@ public class ReadableRepo extends AbstractItemRepo<Readable> {
     private DBhelper dBhelper = DBhelper.getInstance();
     @Override
     public List<Readable> availableItems() throws SQLException {
-        String sql = "SELECT name,count,price,description,cover,age_range,author,publisher,pub_date FROM item_readable WHERE count > 0";//todo
+        String sql = "SELECT name,count,price,description,cover,age_range,num_page FROM item_readable WHERE count > 0";//todo
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Readable> items = new ArrayList<>();
@@ -33,6 +33,7 @@ public class ReadableRepo extends AbstractItemRepo<Readable> {
             item.setDescription(resultSet.getString(4));
             item.setCover(CoverType.valueOf(resultSet.getString(5)));
             item.setAgeRange(AgeRange.valueOf(resultSet.getString(6)));
+            item.setNumOfPage(resultSet.getInt(7));
             //publisher
             //pub_date
             items.add(item);

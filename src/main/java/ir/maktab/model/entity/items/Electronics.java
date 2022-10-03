@@ -1,18 +1,15 @@
 package ir.maktab.model.entity.items;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @ToString
 public class Electronics extends Item{
-
-    public Electronics(String name, double price, String description, int count, String model) {
-        super(name, price, description, count);
-        this.model = model;
-    }
 
     public Electronics() {
     }
