@@ -26,35 +26,33 @@ public class ItemService {
     ShoesRepo shoesRepo = ShoesRepo.getInstance();
 
     public List<Item> availableItems(ItemType type) {
+        List<Item> itemList = new ArrayList<>();
         switch (type){
             case TV:
             case RADIO:
+                try {
+                    itemList.addAll(electronicsRepo.availableItems());
+                } catch (SQLException e) {
+                    throw new DataBaseException(e.getMessage());
+                }
                 break;
             case BOOK:
             case MAGAZINE:
+                try {
+                    itemList.addAll(readableRepo.availableItems());
+                } catch (SQLException e) {
+                    throw new DataBaseException(e.getMessage());
+                }
                 break;
             case FORMAL:
             case CASUAL:
+                try {
+                    itemList.addAll(shoesRepo.availableItems());
+                } catch (SQLException e) {
+                    throw new DataBaseException(e.getMessage());
+                }
                 break;
-
         }
-        List<Item> itemList = new ArrayList<>();
-        try {
-            itemList.addAll(electronicsRepo.availableItems());
-        } catch (SQLException e) {
-            throw new DataBaseException(e.getMessage());
-        }
-        try {
-            itemList.addAll(readableRepo.availableItems());
-        } catch (SQLException e) {
-            throw new DataBaseException(e.getMessage());
-        }
-        try {
-            itemList.addAll(shoesRepo.availableItems());
-        } catch (SQLException e) {
-            throw new DataBaseException(e.getMessage());
-        }
-
         return itemList;
     }
 }
