@@ -13,10 +13,13 @@ public class ShoppingCardRepo {
     public static ShoppingCardRepo getInstance(){
         return instance;
     }
-    public boolean addItem(){return true;}
-    public boolean deleteItem(){return true;}
+    public boolean addItem(){//unnecessary
+        return true;}
+    public boolean deleteItem(){//unnecessary
+        return true;}
     public List<Item> allItems(){
         return new ArrayList<>();
     }
-    public boolean confirmShopping(){return true;}
+    public boolean confirmShopping(){
+        return true;}
 }
