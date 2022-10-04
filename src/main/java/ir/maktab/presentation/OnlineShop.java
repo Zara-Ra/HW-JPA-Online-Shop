@@ -38,12 +38,24 @@ public class OnlineShop {
         }
         switch (choice) {
             case 1:
+                if(user != null){
+                    System.out.println("Please Sign Out First");
+                    welcome();
+                    break;
+                }
                 if (signIn())
                     secondMenu();
-                else
+                else{
+                    System.out.println("Wrong username password");
                     welcome();
+                }
                 break;
             case 2:
+                if(user != null){
+                    System.out.println("Please Sign Out First");
+                    welcome();
+                    break;
+                }
                 if (signUp())
                     secondMenu();
                 else
@@ -241,20 +253,51 @@ public class OnlineShop {
     }
 
     private void signOut() {
-        //TODO should call confirmPurchase also to add the shoppingcard to the database for future access
-        userService.signOut(user);
+        System.out.println("---------------------------------------------");
+        System.out.println("Press 1 --> Confirm Purchase Before Sign Out");
+        System.out.println("Press 2 --> Empty Shopping Card and Sign Out");
+        System.out.println("Press 3 --> Save Shopping Card For Later Purchase and Sign Out");
+        System.out.println("Press 4 --> Back");
+        System.out.println("---------------------------------------------");
+        int choice = Integer.parseInt(scanner.nextLine());
+        switch (choice){
+            case 1:
+                signOutHelper(ConfirmStatus.CONFIRMED);
+                break;
+            case 2:
+                signOutHelper(ConfirmStatus.NOTCONFIRMED);
+                break;
+            case 3:
+                signOutHelper(ConfirmStatus.PENDING);
+                break;
+            case 4:
+                secondMenu();
+                break;
+        }
     }
 
-    private boolean signIn() {//TODO handel ShoppingCard , read from table Shoppingcard
+    private void signOutHelper(ConfirmStatus confirmed) {
+        confirmPurchase(confirmed);
+        user = userService.signOut(user);
+        shopItems.clear();
+    }
+
+    private boolean signIn() {
         boolean signInResult = false;
-        user = new User("Hoda", "Rahimi", new ShoppingCard());
         //Validate username & password
+        System.out.println("Username: ");
+        String username = scanner.nextLine();
+        System.out.println("Password: ");
+        String password = scanner.nextLine();
+        user = new User(username,password);
         try {
             if (userService.signIn(user)) {
+                // todo user.getShoppingCard().setUser(user);
+                ShoppingCard shoppingCard = userService.findShoppingCard(user);
+                //user.getShoppingCard().setConfirmStatus(ConfirmStatus.PENDING);
                 System.out.println("Signed In Successfully");
                 signInResult = true;
-                user.getShoppingCard().setUser(user);
-                user.getShoppingCard().setConfirmStatus(ConfirmStatus.PENDING);
+
             } else {
                 System.out.println("Unable to Sign In, try again later");
             }
@@ -267,8 +310,12 @@ public class OnlineShop {
 
     public boolean signUp() {
         boolean signUpResult = false;
-        user = new User("Hoda", "Rahimi", new ShoppingCard());
-        //Validate username & password
+        //TODO Validate username & password
+        System.out.println("Username: ");
+        String username = scanner.nextLine();
+        System.out.println("Password: ");
+        String password = scanner.nextLine();
+        user = new User(username,password, new ShoppingCard());
         try {
             if (userService.signUp(user)) {
                 System.out.println("Signed Up Successfully");

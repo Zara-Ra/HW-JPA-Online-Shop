@@ -3,7 +3,6 @@ package ir.maktab.service;
 import ir.maktab.model.entity.ShoppingCard;
 import ir.maktab.model.entity.User;
 import ir.maktab.model.entity.items.Item;
-import ir.maktab.model.enums.ConfirmStatus;
 import ir.maktab.model.repository.ShoppingCardRepo;
 import ir.maktab.util.exceptions.DataBaseException;
 import ir.maktab.util.exceptions.ShoppingCardFullExcepiton;
@@ -28,20 +27,19 @@ public class ShoppingCardService {
 
     public boolean addItem(User user, Item item) {
         Map<Item, Integer> shoppingItemsMap = user.getShoppingCard().getShoppingItemsMap();
-        if (shoppingItemsMap.size() == 5) {
-            throw new ShoppingCardFullExcepiton("There are already 5 Distinct Items in Shopping Card");
-        }
         Integer numOfItem = 1;
-        if(shoppingItemsMap.containsKey(item)){
+        if (shoppingItemsMap.containsKey(item)) {
             numOfItem = shoppingItemsMap.get(item);
             numOfItem++;
+        } else if (shoppingItemsMap.size() == 5) {
+            throw new ShoppingCardFullExcepiton("There are already 5 Distinct Items in Shopping Card");
         }
         shoppingItemsMap.put(item, numOfItem);
         item.countMinus();
         return true;
     }
 
-    public void removeItem(Iterator iterator){
+    public void removeItem(Iterator iterator) {
         iterator.remove();
     }
 
@@ -63,6 +61,6 @@ public class ShoppingCardService {
     }
 
     public void editNumOfItem(Map<Item, Integer> shoppingItemMap, Item item, int num) {
-        shoppingItemMap.replace(item,num);
+        shoppingItemMap.replace(item, num);
     }
 }

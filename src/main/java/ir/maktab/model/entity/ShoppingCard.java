@@ -16,4 +16,9 @@ public class ShoppingCard {
     private Map<Item, Integer> shoppingItemsMap = new HashMap<>();
     private ConfirmStatus confirmStatus;
     private Date date;
+
+    public ShoppingCard(User user, ConfirmStatus confirmStatus) {
+        this.user = user;
+        this.confirmStatus = confirmStatus;
+    }
 }

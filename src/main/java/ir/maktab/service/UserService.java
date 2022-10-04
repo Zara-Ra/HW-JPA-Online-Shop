@@ -1,8 +1,12 @@
 package ir.maktab.service;
 
+import ir.maktab.model.entity.ShoppingCard;
 import ir.maktab.model.entity.User;
+import ir.maktab.model.enums.ConfirmStatus;
+import ir.maktab.model.repository.ShoppingCardRepo;
 import ir.maktab.model.repository.UserRepo;
 import ir.maktab.util.exceptions.DataBaseException;
+import ir.maktab.util.exceptions.ShoppingCardNotFound;
 import ir.maktab.util.exceptions.UserNotFoundException;
 import ir.maktab.util.exceptions.UserNotSignedUpException;
 
@@ -19,6 +23,7 @@ public class UserService implements PersonService {
     }
 
     private final UserRepo userRepo = UserRepo.getInstance();
+    private final ShoppingCardRepo shoppingCardRepo = ShoppingCardRepo.getInstance();
 
     @Override
     public boolean signIn(User user) {
@@ -47,17 +52,30 @@ public class UserService implements PersonService {
     }
 
     private void checkUser(User user) {
-        if(user == null)
+        if (user == null)
             throw new NullPointerException("The User Can not be null");
-        if(user.getUsername() == null)
+        if (user.getUsername() == null)
             throw new IllegalArgumentException("Username Can not be empty");
-        if(user.getPassword() == null)
+        if (user.getPassword() == null)
             throw new IllegalArgumentException("Password Can not be empty");
     }
 
     @Override
-    public boolean signOut(User user) {
-        user = null;
-        return true;
+    public User signOut(User user) {
+        return null;
+    }
+
+    public ShoppingCard findShoppingCard(User user) {
+        ShoppingCard result = new ShoppingCard(user,ConfirmStatus.PENDING);
+        int shoppingCardID = 0;
+        try {
+            shoppingCardID = shoppingCardRepo.findID(user);
+        } catch (SQLException e) {
+            throw new DataBaseException(e.getMessage());
+        } catch (ShoppingCardNotFound e) {
+            return result;
+        }
+        shoppingCardRepo.findShoppingCardItems(shoppingCardID);
+        return result;
     }
 }
