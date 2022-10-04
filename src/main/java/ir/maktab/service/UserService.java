@@ -2,15 +2,17 @@ package ir.maktab.service;
 
 import ir.maktab.model.entity.ShoppingCard;
 import ir.maktab.model.entity.User;
+import ir.maktab.model.entity.items.Item;
 import ir.maktab.model.enums.ConfirmStatus;
-import ir.maktab.model.repository.ShoppingCardRepo;
-import ir.maktab.model.repository.UserRepo;
+import ir.maktab.model.repository.*;
 import ir.maktab.util.exceptions.DataBaseException;
 import ir.maktab.util.exceptions.ShoppingCardNotFound;
 import ir.maktab.util.exceptions.UserNotFoundException;
 import ir.maktab.util.exceptions.UserNotSignedUpException;
 
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Map;
 
 public class UserService implements PersonService {
     private UserService() {
@@ -24,6 +26,10 @@ public class UserService implements PersonService {
 
     private final UserRepo userRepo = UserRepo.getInstance();
     private final ShoppingCardRepo shoppingCardRepo = ShoppingCardRepo.getInstance();
+    ElectronicsRepo electronicsRepo = ElectronicsRepo.getInstance();
+    ReadableRepo readableRepo = ReadableRepo.getInstance();
+    ShoesRepo shoesRepo = ShoesRepo.getInstance();
+
 
     @Override
     public boolean signIn(User user) {
@@ -75,7 +81,16 @@ public class UserService implements PersonService {
         } catch (ShoppingCardNotFound e) {
             return result;
         }
-        shoppingCardRepo.findShoppingCardItems(shoppingCardID);
+        Map<Item, Integer> shoppingItemsMap = null;
+        try {
+            shoppingItemsMap.putAll(Collections.unmodifiableMap(electronicsRepo.findShoppingCardItems(shoppingCardID)));
+            shoppingItemsMap.putAll(Collections.unmodifiableMap(shoesRepo.findShoppingCardItems(shoppingCardID)));
+            shoppingItemsMap.putAll(Collections.unmodifiableMap(readableRepo.findShoppingCardItems(shoppingCardID)));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        result.setShoppingItemsMap(shoppingItemsMap);
         return result;
     }
 }

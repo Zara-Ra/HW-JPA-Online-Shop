@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,8 +81,5 @@ public class ShoppingCardRepo {
         if(!resultSet.next())
             throw new ShoppingCardNotFound("You dont have any Pending Shopping Cards");
         return resultSet.getInt(1);
-    }
-
-    public void findShoppingCardItems(int shoppingCardID) {
     }
 }

@@ -7,6 +7,8 @@ import ir.maktab.util.exceptions.ItemUnavailableException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractItemRepo<T extends Item> implements ItemRepo<T> {
     private final DBhelper dbhelper = DBhelper.getInstance();
@@ -19,6 +21,15 @@ public abstract class AbstractItemRepo<T extends Item> implements ItemRepo<T> {
         preparedStatement.setString(2, item.getName());
         return preparedStatement.executeUpdate() > 0;
     }
+
+
+
+
+
+
+
+
+
 
     @Override
     public T findItemByName(T item) throws SQLException, ItemUnavailableException {
