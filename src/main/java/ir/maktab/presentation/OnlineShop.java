@@ -102,11 +102,7 @@ public class OnlineShop {
                 }
                 secondMenu();
                 break;
-            /*case 5:
-                confirmPurchase(ConfirmStatus.CONFIRMED);
-                secondMenu();
-                break;
-            */case 5:
+            case 5:
                 welcome();
                 break;
         }
