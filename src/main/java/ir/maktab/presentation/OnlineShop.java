@@ -77,8 +77,7 @@ public class OnlineShop {
         System.out.println("Press 2 --> Add Item to Shopping Card");
         System.out.println("Press 3 --> Delete Item from Shopping Card");
         System.out.println("Press 4 --> View Shopping Card");
-        System.out.println("Press 5 --> Confirm Purchase");
-        System.out.println("Press 6 --> Back");
+        System.out.println("Press 5 --> Back");
         System.out.println("---------------------------------------------");
         int choice = Integer.parseInt(scanner.nextLine());
         switch (choice) {
@@ -95,35 +94,36 @@ public class OnlineShop {
                 secondMenu();
                 break;
             case 4:
-                printShoppingCard();
+                try{
+                    printShoppingCard();
+                    confrimationMenu();
+                }catch (ShoppingCardFullExcepiton e){
+                    System.err.println(e.getMessage());
+                }
                 secondMenu();
                 break;
-            case 5:
+            /*case 5:
                 confirmPurchase(ConfirmStatus.CONFIRMED);
                 secondMenu();
                 break;
-            case 6:
+            */case 5:
                 welcome();
                 break;
         }
     }
 
-    private void confirmPurchase(ConfirmStatus confirmStatus) {
-        user.getShoppingCard().setConfirmStatus(confirmStatus);
-        shoppingCardService.confirmShopping(user.getShoppingCard());
-        if (confirmStatus.equals(ConfirmStatus.CONFIRMED)) {
-            itemService.updateShopItemsCount(user.getShoppingCard(),shopItems);
-        }
-    }
-
     private void printShoppingCard() {
+        double totalPrice = 0;
         Map<Item, Integer> shoppingItemMap = user.getShoppingCard().getShoppingItemsMap();
         if (shoppingItemMap.size() == 0) {
-            System.out.println("Shopping Card is Empty");
+            throw new ShoppingCardFullExcepiton("Shopping Card is Empty");
         } else {
             for (Map.Entry<Item, Integer> entry : shoppingItemMap.entrySet()) {
                 System.out.println("Number of Item: " + entry.getValue() + entry.getKey());
+                totalPrice += entry.getValue() * entry.getKey().getPrice();
             }
+            System.out.println("---------------------------------------------");
+            System.out.println("Total Price: "+ totalPrice);
         }
     }
 
@@ -134,11 +134,13 @@ public class OnlineShop {
         } else {
             for (Iterator<Map.Entry<Item, Integer>> it = shoppingItemMap.entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry<Item, Integer> entry = it.next();
+                System.out.println("---------------------------------------------");
                 System.out.println("Number of Item: " + entry.getValue() + entry.getKey());
                 System.out.println("Press 1 --> Delete Item");
                 System.out.println("Press 2 --> Decrease the Number of Item");
-                System.out.println("Press 3 --> Next Item");
+                System.out.println("Press 3 --> Delete Next Item");
                 System.out.println("Press 4 --> Back");
+                System.out.println("---------------------------------------------");
                 int choice = Integer.parseInt(scanner.nextLine());
                 Integer deletedNumOfItems = 1;
                 switch (choice) {
@@ -182,9 +184,9 @@ public class OnlineShop {
 
     private void shop() {
         System.out.println("---------------------------------------------");
-        System.out.println("Press 1 --> Electronics");
-        System.out.println("Press 2 --> Readables");
-        System.out.println("Press 3 --> Shoes");
+        System.out.println("Press 1 --> Shop Electronics");
+        System.out.println("Press 2 --> Shop Readables");
+        System.out.println("Press 3 --> Shop Shoes");
         System.out.println("Press 4 --> Back");
         System.out.println("---------------------------------------------");
         int choice = Integer.parseInt(scanner.nextLine());
@@ -252,23 +254,23 @@ public class OnlineShop {
         }
     }
 
-    private void signOut() {
+    private void confrimationMenu() {
         System.out.println("---------------------------------------------");
-        System.out.println("Press 1 --> Confirm Purchase Before Sign Out");
-        System.out.println("Press 2 --> Empty Shopping Card and Sign Out");
-        System.out.println("Press 3 --> Save Shopping Card For Later Purchase and Sign Out");
+        System.out.println("Press 1 --> Confirm Purchase");
+        System.out.println("Press 2 --> Empty Shopping Card");
+        System.out.println("Press 3 --> Save Shopping Card For Later Purchase");
         System.out.println("Press 4 --> Back");
         System.out.println("---------------------------------------------");
         int choice = Integer.parseInt(scanner.nextLine());
         switch (choice){
             case 1:
-                signOutHelper(ConfirmStatus.CONFIRMED);
+                confirmPurchase(ConfirmStatus.CONFIRMED);
                 break;
             case 2:
-                signOutHelper(ConfirmStatus.NOTCONFIRMED);
+                confirmPurchase(ConfirmStatus.DELETE);
                 break;
             case 3:
-                signOutHelper(ConfirmStatus.PENDING);
+                confirmPurchase(ConfirmStatus.PENDING);
                 break;
             case 4:
                 secondMenu();
@@ -276,10 +278,30 @@ public class OnlineShop {
         }
     }
 
-    private void signOutHelper(ConfirmStatus confirmed) {
+    private void confirmationHelper(ConfirmStatus confirmed) {
         confirmPurchase(confirmed);
-        user = userService.signOut(user);
+        //user = userService.signOut(user);
         shopItems.clear();
+    }
+    private void confirmPurchase(ConfirmStatus confirmStatus) {
+        user.getShoppingCard().setConfirmStatus(confirmStatus);
+        switch (confirmStatus){
+            case CONFIRMED :
+                printShoppingCard();
+                shoppingCardService.confirmShopping(user.getShoppingCard());
+                itemService.updateShopItemsCount(user.getShoppingCard(),shopItems);
+                user.getShoppingCard().setConfirmStatus(ConfirmStatus.PENDING);
+                user.getShoppingCard().getShoppingItemsMap().clear();
+                shopItems.clear();
+                break;
+            case PENDING:
+                shoppingCardService.confirmShopping(user.getShoppingCard());
+                break;
+            case DELETE:
+                user.getShoppingCard().getShoppingItemsMap().clear();
+                shopItems.clear();
+                break;
+        }
     }
 
     private boolean signIn() {
@@ -292,9 +314,8 @@ public class OnlineShop {
         user = new User(username,password);
         try {
             if (userService.signIn(user)) {
-                // todo user.getShoppingCard().setUser(user);
                 ShoppingCard shoppingCard = userService.findShoppingCard(user);
-                //user.getShoppingCard().setConfirmStatus(ConfirmStatus.PENDING);
+                user.setShoppingCard(shoppingCard);
                 System.out.println("Signed In Successfully");
                 signInResult = true;
 
@@ -330,5 +351,12 @@ public class OnlineShop {
         } finally {
             return signUpResult;
         }
+    }
+
+    private void signOut() {
+        ConfirmStatus confirmStatus = user.getShoppingCard().getConfirmStatus();
+        if(confirmStatus.equals(ConfirmStatus.PENDING))
+            confirmPurchase(ConfirmStatus.PENDING);
+        user = userService.signOut(user);
     }
 }

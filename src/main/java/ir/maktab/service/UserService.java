@@ -12,6 +12,7 @@ import ir.maktab.util.exceptions.UserNotSignedUpException;
 
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class UserService implements PersonService {
@@ -75,13 +76,13 @@ public class UserService implements PersonService {
         ShoppingCard result = new ShoppingCard(user,ConfirmStatus.PENDING);
         int shoppingCardID = 0;
         try {
-            shoppingCardID = shoppingCardRepo.findID(user);
+            shoppingCardID = shoppingCardRepo.findID(user.getUsername(),ConfirmStatus.PENDING);
         } catch (SQLException e) {
             throw new DataBaseException(e.getMessage());
-        } catch (ShoppingCardNotFound e) {
-            return result;
         }
-        Map<Item, Integer> shoppingItemsMap = null;
+        if(shoppingCardID == 0)
+            return result;
+        Map<Item, Integer> shoppingItemsMap = new HashMap<>();
         try {
             shoppingItemsMap.putAll(Collections.unmodifiableMap(electronicsRepo.findShoppingCardItems(shoppingCardID)));
             shoppingItemsMap.putAll(Collections.unmodifiableMap(shoesRepo.findShoppingCardItems(shoppingCardID)));

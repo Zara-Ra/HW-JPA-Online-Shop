@@ -3,6 +3,7 @@ package ir.maktab.service;
 import ir.maktab.model.entity.ShoppingCard;
 import ir.maktab.model.entity.User;
 import ir.maktab.model.entity.items.Item;
+import ir.maktab.model.enums.ConfirmStatus;
 import ir.maktab.model.repository.ShoppingCardRepo;
 import ir.maktab.util.exceptions.DataBaseException;
 import ir.maktab.util.exceptions.ShoppingCardFullExcepiton;
@@ -32,7 +33,7 @@ public class ShoppingCardService {
             numOfItem = shoppingItemsMap.get(item);
             numOfItem++;
         } else if (shoppingItemsMap.size() == 5) {
-            throw new ShoppingCardFullExcepiton("There are already 5 Distinct Items in Shopping Card");
+            throw new ShoppingCardFullExcepiton("There Are Already 5 Distinct Items in the Shopping Card");
         }
         shoppingItemsMap.put(item, numOfItem);
         item.countMinus();
@@ -47,17 +48,24 @@ public class ShoppingCardService {
         return new ArrayList<>();
     }
 
-    public boolean confirmShopping(ShoppingCard shoppingCard) {
+    public double confirmShopping(ShoppingCard shoppingCard) {
+        double totalPrice = 0;
         try {
-            shoppingCardRepo.confirmShopping(shoppingCard);
-            int id = shoppingCardRepo.getID(shoppingCard);
+            int id = shoppingCardRepo.findID(shoppingCard.getUser().getUsername(), ConfirmStatus.PENDING);
+            if (id != 0) {
+                shoppingCardRepo.deleteShoppingCard(shoppingCard, id);
+            }
+            shoppingCardRepo.insertShoppingCard(shoppingCard);
+            id = shoppingCardRepo.findID(shoppingCard.getUser().getUsername(),shoppingCard.getConfirmStatus());
             for (Map.Entry<Item, Integer> entry : shoppingCard.getShoppingItemsMap().entrySet()) {
                 shoppingCardRepo.addShoppingCardItem(id, entry);
+                totalPrice += entry.getKey().getPrice() * entry.getValue();
             }
+            shoppingCardRepo.updateTotalPrice(id , totalPrice);
         } catch (SQLException e) {
-            throw new DataBaseException("Something wrong with the database");
+            throw new DataBaseException("Something Wrong with the Database...");
         }
-        return true;
+        return totalPrice;
     }
 
     public void editNumOfItem(Map<Item, Integer> shoppingItemMap, Item item, int num) {

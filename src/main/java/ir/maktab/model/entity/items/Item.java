@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public abstract class Item {
     private ItemType type;
-    private String name; //title of book,brand name
+    private String name;
     private double price;
     private String description;
     private int count;

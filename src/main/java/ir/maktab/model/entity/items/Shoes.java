@@ -26,11 +26,11 @@ public class Shoes extends Item{
     @Override
     public String toString() {
         return "\n*** " + getType() +" *** "+
+                " Price: " + getPrice() +
                 " Brand: " + getName() +
                 " Size: " + this.size +
                 " Color: "+this.color+
                 " Gender: "+this.gender+
-                " Price: " + getPrice() +
                 " Description: " + getDescription();
 
     }

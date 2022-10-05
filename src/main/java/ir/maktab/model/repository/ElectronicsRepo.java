@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
-    private ElectronicsRepo(){}//TODO Singelton is this wrong?
+    private ElectronicsRepo(){}
     private static final ElectronicsRepo instance = new ElectronicsRepo();
     public static ElectronicsRepo getInstance(){
         return instance;

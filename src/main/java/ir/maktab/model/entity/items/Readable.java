@@ -26,11 +26,11 @@ public class Readable extends Item{
     @Override
     public String toString() {
         return "\n*** " + getType() +" *** "+
+                " Price: " + getPrice() +
                 " Title: " + getName() +
                 " Cover: " + this.cover +
                 " Age Range: " + this.ageRange +
                 " Number Of Pages: " + this.numOfPage +
-                " Price: " + getPrice() +
                 " Description: " + getDescription();
 
     }

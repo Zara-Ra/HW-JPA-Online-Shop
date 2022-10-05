@@ -22,9 +22,9 @@ public class Electronics extends Item {
     @Override
     public String toString() {
         return "\n*** " + getType() +" *** "+
+                " Price: " + getPrice() +
                 " Model: " + getName() +
                 " Brand: " + this.brand +
-                " Price: " + getPrice() +
                 " Description: " + getDescription();
     }
 }
