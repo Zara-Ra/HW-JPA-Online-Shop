@@ -23,7 +23,7 @@ public class UserRepo implements PersonRepo {
     private final DBhelper dbhelper = DBhelper.getInstance();
 
     @Override
-    public void signIn(User user) throws SQLException {
+    public void signIn(User user) throws SQLException, UserNotFoundException {
         String sql = "SELECT * FROM user_table WHERE username = ? AND password = ?";
         PreparedStatement preparedStatement = dbhelper.getConnection().prepareStatement(sql);
         preparedStatement.setString(1, user.getUsername());
@@ -35,7 +35,7 @@ public class UserRepo implements PersonRepo {
     }
 
     @Override
-    public User signUp(User user) throws SQLException {
+    public User signUp(User user) throws SQLException, UserNotSignedUpException {
         String sql = "INSERT INTO user_table VALUES (?,?)";
         PreparedStatement preparedStatement = dbhelper.getConnection().prepareStatement(sql);
         preparedStatement.setString(1, user.getUsername());

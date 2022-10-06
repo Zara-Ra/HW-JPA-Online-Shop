@@ -1,7 +1,6 @@
 package ir.maktab.model.repository;
 
 import ir.maktab.model.entity.items.Item;
-import ir.maktab.util.exceptions.ItemUnavailableException;
 
 import java.sql.SQLException;
 import java.util.List;

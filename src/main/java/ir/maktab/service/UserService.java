@@ -5,7 +5,6 @@ import ir.maktab.model.entity.User;
 import ir.maktab.model.entity.items.Item;
 import ir.maktab.model.enums.ConfirmStatus;
 import ir.maktab.model.repository.*;
-import ir.maktab.util.exceptions.DataBaseException;
 import ir.maktab.util.exceptions.UserNotFoundException;
 import ir.maktab.util.exceptions.UserNotSignedUpException;
 
@@ -38,7 +37,8 @@ public class UserService implements PersonService {
             userRepo.signIn(user);
             return true;
         } catch (SQLException e) {
-            throw new DataBaseException(e.getMessage());
+            System.err.println("DataBase Error, Sign in");
+            return false;
         } catch (UserNotFoundException e) {
             return false;
         }
@@ -51,7 +51,8 @@ public class UserService implements PersonService {
             userRepo.signUp(user);
             return true;
         } catch (SQLException e) {
-            throw new DataBaseException("This Username Already Exists");
+            System.err.println("DataBase Error, Sign up");
+            return false;
         } catch (UserNotSignedUpException e) {
             return false;
         }
@@ -77,7 +78,7 @@ public class UserService implements PersonService {
         try {
             shoppingCardID = shoppingCardRepo.findID(user.getUsername(), ConfirmStatus.PENDING);
         } catch (SQLException e) {
-            throw new DataBaseException(e.getMessage());
+            System.err.println("DataBase Error, Unable to find Shopping Card");
         }
         if (shoppingCardID == 0)
             return result;
@@ -87,7 +88,7 @@ public class UserService implements PersonService {
             shoppingItemsMap.putAll(Collections.unmodifiableMap(shoesRepo.findShoppingCardItems(shoppingCardID)));
             shoppingItemsMap.putAll(Collections.unmodifiableMap(readableRepo.findShoppingCardItems(shoppingCardID)));
         } catch (SQLException e) {
-            throw new DataBaseException(e.getMessage());
+            System.err.println("DataBase Error, Unable to find Shopping Card");
         }
 
         result.setShoppingItemsMap(shoppingItemsMap);

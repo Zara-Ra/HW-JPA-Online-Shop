@@ -9,7 +9,6 @@ import ir.maktab.model.enums.ProductCategory;
 import ir.maktab.model.repository.ElectronicsRepo;
 import ir.maktab.model.repository.ReadableRepo;
 import ir.maktab.model.repository.ShoesRepo;
-import ir.maktab.util.exceptions.DataBaseException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,21 +36,21 @@ public class ItemService {
                 try {
                     itemList.addAll(electronicsRepo.availableItems());
                 } catch (SQLException e) {
-                    throw new DataBaseException(e.getMessage());
+                    System.err.println("DataBase Error,Electronics");
                 }
                 break;
             case READABLE:
                 try {
                     itemList.addAll(readableRepo.availableItems());
                 } catch (SQLException e) {
-                    throw new DataBaseException(e.getMessage());
+                    System.err.println("DataBase Error,Readable");
                 }
                 break;
             case SHOES:
                 try {
                     itemList.addAll(shoesRepo.availableItems());
                 } catch (SQLException e) {
-                    throw new DataBaseException(e.getMessage());
+                    System.err.println("DataBase Error,Shoes");
                 }
                 break;
         }
@@ -77,21 +76,21 @@ public class ItemService {
                     try {
                         electronicsRepo.editCount((Electronics) entry.getKey(), num);
                     } catch (SQLException e) {
-                        throw new DataBaseException(e.getMessage());
+                        System.err.println("DataBase Error,Unable to Update Items Count");
                     }
                     break;
                 case READABLE:
                     try {
                         readableRepo.editCount((Readable) entry.getKey(), num);
                     } catch (SQLException e) {
-                        throw new DataBaseException(e.getMessage());
+                        System.err.println("DataBase Error,Unable to Update Items Count");
                     }
                     break;
                 case SHOES:
                     try {
                         shoesRepo.editCount((Shoes) entry.getKey(), num);
                     } catch (SQLException e) {
-                        throw new DataBaseException(e.getMessage());
+                        System.err.println("DataBase Error,Unable to Update Items Count");
                     }
                     break;
             }

@@ -2,10 +2,8 @@ package ir.maktab.model.repository;
 
 import ir.maktab.model.entity.items.Item;
 import ir.maktab.util.DBhelper;
-import ir.maktab.util.exceptions.ItemUnavailableException;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class AbstractItemRepo<T extends Item> implements ItemRepo<T> {

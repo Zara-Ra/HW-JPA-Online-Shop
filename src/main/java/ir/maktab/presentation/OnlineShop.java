@@ -9,7 +9,9 @@ import ir.maktab.service.ItemService;
 import ir.maktab.service.ShoppingCardService;
 import ir.maktab.service.UserService;
 import ir.maktab.util.exceptions.ItemUnavailableException;
-import ir.maktab.util.exceptions.ShoppingCardFullExcepiton;
+import ir.maktab.util.exceptions.ShoppingCardExcepiton;
+import ir.maktab.util.exceptions.ValidationException;
+import ir.maktab.util.validation.UserValidate;
 
 import java.util.*;
 
@@ -21,7 +23,6 @@ public class OnlineShop {
     private final ShoppingCardService shoppingCardService = ShoppingCardService.getInstance();
     private Scanner scanner = new Scanner(System.in);
     private User user;
-    //private List<Item> shopItemList = new ArrayList<>();
     private Map<ProductCategory, List<Item>> shopItems = new HashMap<>();
 
     public void welcome() {
@@ -80,7 +81,13 @@ public class OnlineShop {
         System.out.println("Press 4 --> View Shopping Card");
         System.out.println("Press 5 --> Back");
         System.out.println("---------------------------------------------");
-        int choice = Integer.parseInt(scanner.nextLine());
+        int choice = 0;
+        try {
+            choice = Integer.parseInt(scanner.nextLine());
+        } catch (Exception e) {
+            choice = 6;
+        }
+
         switch (choice) {
             case 1:
                 printAllItems();
@@ -98,7 +105,7 @@ public class OnlineShop {
                 try {
                     printShoppingCard();
                     confrimationMenu();
-                } catch (ShoppingCardFullExcepiton e) {
+                } catch (ShoppingCardExcepiton e) {
                     System.err.println(e.getMessage());
                 }
                 secondMenu();
@@ -106,14 +113,17 @@ public class OnlineShop {
             case 5:
                 welcome();
                 break;
+            case 6:
+                secondMenu();
+                break;
         }
     }
 
-    private void printShoppingCard() {
+    private void printShoppingCard() throws ShoppingCardExcepiton {
         double totalPrice = 0;
         Map<Item, Integer> shoppingItemMap = user.getShoppingCard().getShoppingItemsMap();
         if (shoppingItemMap.size() == 0) {
-            throw new ShoppingCardFullExcepiton("Shopping Card is Empty");
+            throw new ShoppingCardExcepiton("Shopping Card is Empty");
         } else {
             for (Map.Entry<Item, Integer> entry : shoppingItemMap.entrySet()) {
                 System.out.println("Number of Item: " + entry.getValue() + entry.getKey());
@@ -138,7 +148,14 @@ public class OnlineShop {
                 System.out.println("Press 3 --> Delete Next Item");
                 System.out.println("Press 4 --> Back");
                 System.out.println("---------------------------------------------");
-                int choice = Integer.parseInt(scanner.nextLine());
+                int choice = 0;
+                try {
+                    choice = Integer.parseInt(scanner.nextLine());
+                } catch (Exception e) {
+                    choice = 4;
+                    System.out.println("Invalid Number, Back to Prevous Menu...");
+                }
+
                 Integer deletedNumOfItems = 1;
                 switch (choice) {
                     case 1:
@@ -184,7 +201,13 @@ public class OnlineShop {
         System.out.println("Press 3 --> Shop Shoes");
         System.out.println("Press 4 --> Back");
         System.out.println("---------------------------------------------");
-        int choice = Integer.parseInt(scanner.nextLine());
+        int choice = 0;
+        try {
+            choice = Integer.parseInt(scanner.nextLine());
+        } catch (Exception e) {
+            choice = 4;
+            System.out.println("Invalid Number, Back to Prevous Menu...");
+        }
         switch (choice) {
             case 1:
                 addItemToShoppingCard(ProductCategory.ELECTRONICS);
@@ -222,7 +245,7 @@ public class OnlineShop {
             System.err.println("Invalid Number Entered");
         } catch (ItemUnavailableException e) {
             System.err.println(e.getMessage());
-        } catch (ShoppingCardFullExcepiton e) {
+        } catch (ShoppingCardExcepiton e) {
             System.err.println(e.getMessage());
         }
     }
@@ -251,11 +274,17 @@ public class OnlineShop {
     private void confrimationMenu() {
         System.out.println("---------------------------------------------");
         System.out.println("Press 1 --> Confirm Purchase");
-        System.out.println("Press 2 --> Empty Shopping Card"); //TODO check if there is a record in the db and change stauts to deleted
+        System.out.println("Press 2 --> Empty Shopping Card");
         System.out.println("Press 3 --> Save Shopping Card For Later Purchase");
-        System.out.println("Press 4 --> Back");
+        System.out.println("Press 4 --> Continue Shopping");
         System.out.println("---------------------------------------------");
-        int choice = Integer.parseInt(scanner.nextLine());
+        int choice = 0;
+        try {
+            choice = Integer.parseInt(scanner.nextLine());
+        } catch (Exception e) {
+            choice = 4;
+            System.out.println("Invalid Number, Back to Prevous Menu...");
+        }
         switch (choice) {
             case 1:
                 confirmPurchase(ConfirmStatus.CONFIRMED);
@@ -274,9 +303,14 @@ public class OnlineShop {
 
     private void confirmPurchase(ConfirmStatus confirmStatus) {
         user.getShoppingCard().setConfirmStatus(confirmStatus);
+        try {
+            printShoppingCard();
+        } catch (ShoppingCardExcepiton e) {
+            System.err.println(e.getMessage());
+            return;
+        }
         switch (confirmStatus) {
             case CONFIRMED:
-                printShoppingCard();
                 shoppingCardService.confirmShopping(user.getShoppingCard());
                 itemService.updateShopItemsCount(user.getShoppingCard(), shopItems);
                 user.getShoppingCard().setConfirmStatus(ConfirmStatus.PENDING);
@@ -296,13 +330,14 @@ public class OnlineShop {
 
     private boolean signIn() {
         boolean signInResult = false;
-        //Validate username & password
         System.out.println("Username: ");
-        String username = scanner.nextLine();
-        System.out.println("Password: ");
-        String password = scanner.nextLine();
-        user = new User(username, password);
         try {
+            String username = scanner.nextLine();
+            UserValidate.Validate(username);
+            System.out.println("Password: ");
+            String password = scanner.nextLine();
+            UserValidate.Validate(password);
+            user = new User(username, password);
             if (userService.signIn(user)) {
                 ShoppingCard shoppingCard = userService.findShoppingCard(user);
                 user.setShoppingCard(shoppingCard);
@@ -312,22 +347,23 @@ public class OnlineShop {
             } else {
                 System.out.println("Unable to Sign In, try again later");
             }
-        } catch (RuntimeException e) {
+        } catch (ValidationException e) {
             System.err.println(e.getMessage());
-        } finally {
-            return signInResult;
         }
+        return signInResult;
+
     }
 
     public boolean signUp() {
         boolean signUpResult = false;
-        //TODO Validate username & password
         System.out.println("Username: ");
-        String username = scanner.nextLine();
-        System.out.println("Password: ");
-        String password = scanner.nextLine();
-        user = new User(username, password, new ShoppingCard());
         try {
+            String username = scanner.nextLine();
+            UserValidate.Validate(username);
+            System.out.println("Password: ");
+            String password = scanner.nextLine();
+            UserValidate.Validate(password);
+            user = new User(username, password, new ShoppingCard());
             if (userService.signUp(user)) {
                 System.out.println("Signed Up Successfully");
                 user.getShoppingCard().setUser(user);
@@ -336,11 +372,10 @@ public class OnlineShop {
             } else {
                 System.out.println("Unable to Sign Up, try again later");
             }
-        } catch (RuntimeException e) {
+        } catch (ValidationException e) {
             System.err.println(e.getMessage());
-        } finally {
-            return signUpResult;
         }
+        return signUpResult;
     }
 
     private void signOut() {
