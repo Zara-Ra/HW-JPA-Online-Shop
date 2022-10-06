@@ -21,6 +21,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "Username: " + username + " Shopping Card: "+ shoppingCard;
+        return "Username: " + username + " Shopping Card: " + shoppingCard;
     }
 }

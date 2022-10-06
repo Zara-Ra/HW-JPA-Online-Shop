@@ -9,7 +9,7 @@ public enum ItemType {
     FORMAL;
 
     public ProductCategory toPrdoductCategory() {
-        switch (this){
+        switch (this) {
             case BOOK:
             case MAGAZINE:
                 return ProductCategory.READABLE;

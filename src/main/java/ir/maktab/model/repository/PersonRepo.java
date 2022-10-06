@@ -6,5 +6,6 @@ import java.sql.SQLException;
 
 public interface PersonRepo {
     void signIn(User user) throws SQLException;
+
     User signUp(User user) throws SQLException;
 }

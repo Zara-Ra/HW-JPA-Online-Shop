@@ -21,7 +21,7 @@ public class Electronics extends Item {
 
     @Override
     public String toString() {
-        return "\n*** " + getType() +" *** "+
+        return "\n*** " + getType() + " *** " +
                 " Price: " + getPrice() +
                 " Model: " + getName() +
                 " Brand: " + this.brand +

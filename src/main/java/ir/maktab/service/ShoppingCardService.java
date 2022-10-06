@@ -56,12 +56,12 @@ public class ShoppingCardService {
                 shoppingCardRepo.deleteShoppingCard(shoppingCard, id);
             }
             shoppingCardRepo.insertShoppingCard(shoppingCard);
-            id = shoppingCardRepo.findID(shoppingCard.getUser().getUsername(),shoppingCard.getConfirmStatus());
+            id = shoppingCardRepo.findID(shoppingCard.getUser().getUsername(), shoppingCard.getConfirmStatus());
             for (Map.Entry<Item, Integer> entry : shoppingCard.getShoppingItemsMap().entrySet()) {
                 shoppingCardRepo.addShoppingCardItem(id, entry);
                 totalPrice += entry.getKey().getPrice() * entry.getValue();
             }
-            shoppingCardRepo.updateTotalPrice(id , totalPrice);
+            shoppingCardRepo.updateTotalPrice(id, totalPrice);
         } catch (SQLException e) {
             throw new DataBaseException("Something Wrong with the Database...");
         }

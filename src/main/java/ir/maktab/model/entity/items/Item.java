@@ -3,7 +3,6 @@ package ir.maktab.model.entity.items;
 import ir.maktab.model.enums.ItemType;
 import ir.maktab.util.exceptions.ItemUnavailableException;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 

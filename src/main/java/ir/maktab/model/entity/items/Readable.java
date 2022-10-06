@@ -6,12 +6,11 @@ import ir.maktab.model.enums.ItemType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class Readable extends Item{
+public class Readable extends Item {
     private CoverType cover;
     private AgeRange ageRange;
     private int numOfPage;
@@ -25,7 +24,7 @@ public class Readable extends Item{
 
     @Override
     public String toString() {
-        return "\n*** " + getType() +" *** "+
+        return "\n*** " + getType() + " *** " +
                 " Price: " + getPrice() +
                 " Title: " + getName() +
                 " Cover: " + this.cover +

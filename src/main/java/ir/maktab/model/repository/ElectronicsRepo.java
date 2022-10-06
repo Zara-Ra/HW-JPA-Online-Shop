@@ -14,16 +14,20 @@ import java.util.List;
 import java.util.Map;
 
 public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
-    private ElectronicsRepo(){}
+    private ElectronicsRepo() {
+    }
+
     private static final ElectronicsRepo instance = new ElectronicsRepo();
-    public static ElectronicsRepo getInstance(){
+
+    public static ElectronicsRepo getInstance() {
         return instance;
     }
 
     private DBhelper dBhelper = DBhelper.getInstance();
+
     @Override
     public List<Electronics> availableItems() throws SQLException {
-        String sql = "SELECT name,count,price,description,brand,type FROM item_electronics WHERE count > 0";//todo
+        String sql = "SELECT name,count,price,description,brand,type FROM item_electronics WHERE count > 0";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Electronics> items = new ArrayList<>();
@@ -44,7 +48,7 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
         Map<Item, Integer> resultShopingItemMap = new HashMap<>();
         String sql = "SELECT S.item_count,I.name,I.price,I.description,I.brand,I.type FROM \"shopping_items\" S JOIN \"item_electronics\" I ON S.item_name = I.\"name\" WHERE S.shopping_card_id = ? ";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
-        preparedStatement.setInt(1,shoppingCardID);
+        preparedStatement.setInt(1, shoppingCardID);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             Integer count = resultSet.getInt(1);
@@ -53,8 +57,8 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
             String description = resultSet.getString(4);
             String brand = resultSet.getString(5);
             ItemType type = ItemType.valueOf(resultSet.getString(6));
-            Item item = new Electronics(type,name,price,description,0,brand);
-            resultShopingItemMap.put(item,count);
+            Item item = new Electronics(type, name, price, description, 0, brand);
+            resultShopingItemMap.put(item, count);
         }
         return resultShopingItemMap;
     }

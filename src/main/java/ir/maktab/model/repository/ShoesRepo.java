@@ -1,8 +1,6 @@
 package ir.maktab.model.repository;
 
-import ir.maktab.model.entity.items.Electronics;
 import ir.maktab.model.entity.items.Item;
-import ir.maktab.model.entity.items.Readable;
 import ir.maktab.model.entity.items.Shoes;
 import ir.maktab.model.enums.Color;
 import ir.maktab.model.enums.Gender;
@@ -18,16 +16,19 @@ import java.util.List;
 import java.util.Map;
 
 public class ShoesRepo extends AbstractItemRepo<Shoes> {
-    private ShoesRepo(){}
+    private ShoesRepo() {
+    }
+
     private static final ShoesRepo instance = new ShoesRepo();
     private DBhelper dBhelper = DBhelper.getInstance();
-    public static ShoesRepo getInstance(){
+
+    public static ShoesRepo getInstance() {
         return instance;
     }
 
     @Override
     public List<Shoes> availableItems() throws SQLException {
-        String sql = "SELECT name,count,price,description,color,gender,size,type FROM item_shoes WHERE count > 0";//todo
+        String sql = "SELECT name,count,price,description,color,gender,size,type FROM item_shoes WHERE count > 0";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Shoes> items = new ArrayList<>();
@@ -50,7 +51,7 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
         Map<Item, Integer> resultShopingItemMap = new HashMap<>();
         String sql = "SELECT S.item_count,I.name,I.price,I.description,I.color,I.gender,I.size,I.type FROM \"shopping_items\" S JOIN \"item_shoes\" I ON S.item_name = I.\"name\" WHERE S.shopping_card_id = ? ";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
-        preparedStatement.setInt(1,shoppingCardID);
+        preparedStatement.setInt(1, shoppingCardID);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             Integer count = resultSet.getInt(1);
@@ -62,8 +63,8 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
             int size = resultSet.getInt(7);
 
             ItemType type = ItemType.valueOf(resultSet.getString(8));
-            Item item = new Shoes(type,name,price,description,0,size,color,gender);
-            resultShopingItemMap.put(item,count);
+            Item item = new Shoes(type, name, price, description, 0, size, color, gender);
+            resultShopingItemMap.put(item, count);
         }
         return resultShopingItemMap;
     }

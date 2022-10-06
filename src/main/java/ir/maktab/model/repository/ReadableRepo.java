@@ -1,6 +1,5 @@
 package ir.maktab.model.repository;
 
-import ir.maktab.model.entity.items.Electronics;
 import ir.maktab.model.entity.items.Item;
 import ir.maktab.model.entity.items.Readable;
 import ir.maktab.model.enums.AgeRange;
@@ -17,15 +16,20 @@ import java.util.List;
 import java.util.Map;
 
 public class ReadableRepo extends AbstractItemRepo<Readable> {
-    private ReadableRepo(){}
+    private ReadableRepo() {
+    }
+
     private static final ReadableRepo instance = new ReadableRepo();
-    public static ReadableRepo getInstance(){
+
+    public static ReadableRepo getInstance() {
         return instance;
     }
+
     private DBhelper dBhelper = DBhelper.getInstance();
+
     @Override
     public List<Readable> availableItems() throws SQLException {
-        String sql = "SELECT name,count,price,description,cover,age_range,num_page,type FROM item_readable WHERE count > 0";//todo
+        String sql = "SELECT name,count,price,description,cover,age_range,num_page,type FROM item_readable WHERE count > 0";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Readable> items = new ArrayList<>();
@@ -48,7 +52,7 @@ public class ReadableRepo extends AbstractItemRepo<Readable> {
         Map<Item, Integer> resultShopingItemMap = new HashMap<>();
         String sql = "SELECT S.item_count,I.name,I.price,I.description,I.cover,I.age_range,I.num_page,I.type FROM \"shopping_items\" S JOIN \"item_readable\" I ON S.item_name = I.\"name\" WHERE S.shopping_card_id = ? ";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
-        preparedStatement.setInt(1,shoppingCardID);
+        preparedStatement.setInt(1, shoppingCardID);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             Integer count = resultSet.getInt(1);
@@ -60,8 +64,8 @@ public class ReadableRepo extends AbstractItemRepo<Readable> {
             int numPage = resultSet.getInt(7);
 
             ItemType type = ItemType.valueOf(resultSet.getString(8));
-            Item item = new Readable(type,name,price,description,0,cover,ageRange,numPage);
-            resultShopingItemMap.put(item,count);
+            Item item = new Readable(type, name, price, description, 0, cover, ageRange, numPage);
+            resultShopingItemMap.put(item, count);
         }
         return resultShopingItemMap;
     }

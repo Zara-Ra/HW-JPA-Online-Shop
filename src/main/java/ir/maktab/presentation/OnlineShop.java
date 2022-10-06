@@ -22,7 +22,8 @@ public class OnlineShop {
     private Scanner scanner = new Scanner(System.in);
     private User user;
     //private List<Item> shopItemList = new ArrayList<>();
-    private Map<ProductCategory,List<Item>> shopItems = new HashMap<>();
+    private Map<ProductCategory, List<Item>> shopItems = new HashMap<>();
+
     public void welcome() {
         System.out.println("---------------------------------------------");
         System.out.println("Press 1  --> SignIn");
@@ -38,20 +39,20 @@ public class OnlineShop {
         }
         switch (choice) {
             case 1:
-                if(user != null){
+                if (user != null) {
                     System.out.println("Please Sign Out First");
                     welcome();
                     break;
                 }
                 if (signIn())
                     secondMenu();
-                else{
+                else {
                     System.out.println("Wrong username password");
                     welcome();
                 }
                 break;
             case 2:
-                if(user != null){
+                if (user != null) {
                     System.out.println("Please Sign Out First");
                     welcome();
                     break;
@@ -94,10 +95,10 @@ public class OnlineShop {
                 secondMenu();
                 break;
             case 4:
-                try{
+                try {
                     printShoppingCard();
                     confrimationMenu();
-                }catch (ShoppingCardFullExcepiton e){
+                } catch (ShoppingCardFullExcepiton e) {
                     System.err.println(e.getMessage());
                 }
                 secondMenu();
@@ -119,7 +120,7 @@ public class OnlineShop {
                 totalPrice += entry.getValue() * entry.getKey().getPrice();
             }
             System.out.println("---------------------------------------------");
-            System.out.println("Total Price: "+ totalPrice);
+            System.out.println("Total Price: " + totalPrice);
         }
     }
 
@@ -142,20 +143,18 @@ public class OnlineShop {
                 switch (choice) {
                     case 1:
                         deletedNumOfItems = entry.getValue();
-                        itemService.increaseShopItemsCount(shopItems,entry.getKey(),deletedNumOfItems);
+                        itemService.increaseShopItemsCount(shopItems, entry.getKey(), deletedNumOfItems);
                         shoppingCardService.removeItem(it);
                         break;
                     case 2:
                         int validNumItem = entry.getValue() - 1;
                         if (validNumItem == 0) {
-                            itemService.increaseShopItemsCount(shopItems, entry.getKey(),deletedNumOfItems);
+                            itemService.increaseShopItemsCount(shopItems, entry.getKey(), deletedNumOfItems);
                             shoppingCardService.removeItem(it);
-                        }
-                        else if (validNumItem == 1) {
-                            itemService.increaseShopItemsCount(shopItems, entry.getKey(),deletedNumOfItems);
+                        } else if (validNumItem == 1) {
+                            itemService.increaseShopItemsCount(shopItems, entry.getKey(), deletedNumOfItems);
                             shoppingCardService.editNumOfItem(shoppingItemMap, entry.getKey(), 1);
-                        }
-                        else {
+                        } else {
                             System.out.println("How many Items do you need? ( 1 to " + validNumItem + " )");
                             int numOfItems = Integer.parseInt(scanner.nextLine());
                             while (numOfItems <= 0 || numOfItems > validNumItem) {
@@ -163,7 +162,7 @@ public class OnlineShop {
                                 numOfItems = Integer.parseInt(scanner.nextLine());
                             }
                             deletedNumOfItems = entry.getValue() - numOfItems;
-                            itemService.increaseShopItemsCount(shopItems, entry.getKey(),deletedNumOfItems);
+                            itemService.increaseShopItemsCount(shopItems, entry.getKey(), deletedNumOfItems);
                             shoppingCardService.editNumOfItem(shoppingItemMap, entry.getKey(), numOfItems);
                         }
                         break;
@@ -215,23 +214,22 @@ public class OnlineShop {
             if (itemNum < 0 || itemNum >= itemList.size()) {
                 throw new NumberFormatException();
             }
-            if(itemList.get(itemNum).getCount() == 0){
+            if (itemList.get(itemNum).getCount() == 0) {
                 throw new ItemUnavailableException("No More of this Item is Available");
             }
             shoppingCardService.addItem(user, itemList.get(itemNum));
         } catch (NumberFormatException e) {
             System.err.println("Invalid Number Entered");
-        } catch (ItemUnavailableException e){
+        } catch (ItemUnavailableException e) {
             System.err.println(e.getMessage());
-        }
-         catch (ShoppingCardFullExcepiton e) {
+        } catch (ShoppingCardFullExcepiton e) {
             System.err.println(e.getMessage());
         }
     }
 
     private List<Item> itemsByCategory(ProductCategory productCategory) {
-        if(!shopItems.containsKey(productCategory)) {
-             shopItems.put(productCategory ,itemService.itemsByCategory(productCategory));
+        if (!shopItems.containsKey(productCategory)) {
+            shopItems.put(productCategory, itemService.itemsByCategory(productCategory));
         }
         return shopItems.get(productCategory);
     }
@@ -253,12 +251,12 @@ public class OnlineShop {
     private void confrimationMenu() {
         System.out.println("---------------------------------------------");
         System.out.println("Press 1 --> Confirm Purchase");
-        System.out.println("Press 2 --> Empty Shopping Card");
+        System.out.println("Press 2 --> Empty Shopping Card"); //TODO check if there is a record in the db and change stauts to deleted
         System.out.println("Press 3 --> Save Shopping Card For Later Purchase");
         System.out.println("Press 4 --> Back");
         System.out.println("---------------------------------------------");
         int choice = Integer.parseInt(scanner.nextLine());
-        switch (choice){
+        switch (choice) {
             case 1:
                 confirmPurchase(ConfirmStatus.CONFIRMED);
                 break;
@@ -274,18 +272,13 @@ public class OnlineShop {
         }
     }
 
-    private void confirmationHelper(ConfirmStatus confirmed) {
-        confirmPurchase(confirmed);
-        //user = userService.signOut(user);
-        shopItems.clear();
-    }
     private void confirmPurchase(ConfirmStatus confirmStatus) {
         user.getShoppingCard().setConfirmStatus(confirmStatus);
-        switch (confirmStatus){
-            case CONFIRMED :
+        switch (confirmStatus) {
+            case CONFIRMED:
                 printShoppingCard();
                 shoppingCardService.confirmShopping(user.getShoppingCard());
-                itemService.updateShopItemsCount(user.getShoppingCard(),shopItems);
+                itemService.updateShopItemsCount(user.getShoppingCard(), shopItems);
                 user.getShoppingCard().setConfirmStatus(ConfirmStatus.PENDING);
                 user.getShoppingCard().getShoppingItemsMap().clear();
                 shopItems.clear();
@@ -295,6 +288,7 @@ public class OnlineShop {
                 break;
             case DELETE:
                 user.getShoppingCard().getShoppingItemsMap().clear();
+                //todo check change db confirm status
                 shopItems.clear();
                 break;
         }
@@ -307,7 +301,7 @@ public class OnlineShop {
         String username = scanner.nextLine();
         System.out.println("Password: ");
         String password = scanner.nextLine();
-        user = new User(username,password);
+        user = new User(username, password);
         try {
             if (userService.signIn(user)) {
                 ShoppingCard shoppingCard = userService.findShoppingCard(user);
@@ -332,7 +326,7 @@ public class OnlineShop {
         String username = scanner.nextLine();
         System.out.println("Password: ");
         String password = scanner.nextLine();
-        user = new User(username,password, new ShoppingCard());
+        user = new User(username, password, new ShoppingCard());
         try {
             if (userService.signUp(user)) {
                 System.out.println("Signed Up Successfully");
@@ -351,7 +345,7 @@ public class OnlineShop {
 
     private void signOut() {
         ConfirmStatus confirmStatus = user.getShoppingCard().getConfirmStatus();
-        if(confirmStatus.equals(ConfirmStatus.PENDING))
+        if (confirmStatus.equals(ConfirmStatus.PENDING))
             confirmPurchase(ConfirmStatus.PENDING);
         user = userService.signOut(user);
     }

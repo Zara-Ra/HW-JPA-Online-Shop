@@ -19,6 +19,7 @@ public class ShoppingCard {
     private ConfirmStatus confirmStatus;
     private Date date;
     private double totalPrice;
+
     public ShoppingCard(User user, ConfirmStatus confirmStatus) {
         this.user = user;
         this.confirmStatus = confirmStatus;

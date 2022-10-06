@@ -1,11 +1,9 @@
 package ir.maktab.model.repository;
 
 import ir.maktab.model.entity.ShoppingCard;
-import ir.maktab.model.entity.User;
 import ir.maktab.model.entity.items.Item;
 import ir.maktab.model.enums.ConfirmStatus;
 import ir.maktab.util.DBhelper;
-import ir.maktab.util.exceptions.ShoppingCardNotFound;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -28,18 +26,6 @@ public class ShoppingCardRepo {
 
     private DBhelper dBhelper = DBhelper.getInstance();
 
-    public boolean addItem() {//unnecessary
-        return true;
-    }
-
-    public boolean deleteItem() {//unnecessary
-        return true;
-    }
-
-    public List<Item> allItems() {
-        return new ArrayList<>();
-    }
-
     public boolean insertShoppingCard(ShoppingCard shoppingCard) throws SQLException {
         Date today = new Date(System.currentTimeMillis());
         shoppingCard.setDate(today);
@@ -50,10 +36,11 @@ public class ShoppingCardRepo {
         preparedStatement.setDate(3, today);
         return preparedStatement.executeUpdate() > 0;
     }
+
     public void deleteShoppingCard(ShoppingCard shoppingCard, int id) throws SQLException {
         String sql = "DELETE FROM shopping_card WHERE id = ? AND confirm_status = 'PENDING'";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
-        preparedStatement.setInt(1,id);
+        preparedStatement.setInt(1, id);
         preparedStatement.executeUpdate();
     }
 
@@ -71,17 +58,7 @@ public class ShoppingCardRepo {
         String sql = "SELECT id FROM shopping_card WHERE username = ? AND confirm_status = ?";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         preparedStatement.setString(1, username);
-        preparedStatement.setString(2,confirmStatus.toString());
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if(!resultSet.next())
-            return 0;
-        return resultSet.getInt(1);
-    }
-    public int getID(ShoppingCard shoppingCard) throws SQLException {
-        String sql = "SELECT id FROM shopping_card WHERE username = ? AND date = ?";
-        PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
-        preparedStatement.setString(1, shoppingCard.getUser().getUsername());
-        preparedStatement.setDate(2, shoppingCard.getDate());
+        preparedStatement.setString(2, confirmStatus.toString());
         ResultSet resultSet = preparedStatement.executeQuery();
         if (!resultSet.next())
             return 0;
@@ -91,8 +68,8 @@ public class ShoppingCardRepo {
     public void updateTotalPrice(int id, double totalPrice) throws SQLException {
         String sql = "UPDATE shopping_card SET total_price = ? WHERE id = ?";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
-        preparedStatement.setDouble(1,totalPrice);
-        preparedStatement.setInt(2,id);
+        preparedStatement.setDouble(1, totalPrice);
+        preparedStatement.setInt(2, id);
         preparedStatement.executeUpdate();
     }
 }

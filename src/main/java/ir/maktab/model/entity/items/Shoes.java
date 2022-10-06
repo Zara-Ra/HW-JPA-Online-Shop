@@ -6,12 +6,11 @@ import ir.maktab.model.enums.ItemType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class Shoes extends Item{
+public class Shoes extends Item {
     private int size;
     private Color color;
     private Gender gender;
@@ -25,12 +24,12 @@ public class Shoes extends Item{
 
     @Override
     public String toString() {
-        return "\n*** " + getType() +" *** "+
+        return "\n*** " + getType() + " *** " +
                 " Price: " + getPrice() +
                 " Brand: " + getName() +
                 " Size: " + this.size +
-                " Color: "+this.color+
-                " Gender: "+this.gender+
+                " Color: " + this.color +
+                " Gender: " + this.gender +
                 " Description: " + getDescription();
 
     }

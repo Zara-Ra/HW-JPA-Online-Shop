@@ -6,12 +6,10 @@ import ir.maktab.util.exceptions.ItemUnavailableException;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface ItemRepo <T extends Item>{
+public interface ItemRepo<T extends Item> {
 
     List<T> availableItems() throws SQLException;
 
     boolean editCount(T item, int num) throws SQLException;
-
-    T findItemByName(T item) throws SQLException, ItemUnavailableException;
 
 }

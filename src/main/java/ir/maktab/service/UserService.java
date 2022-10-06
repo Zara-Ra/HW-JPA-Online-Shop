@@ -6,7 +6,6 @@ import ir.maktab.model.entity.items.Item;
 import ir.maktab.model.enums.ConfirmStatus;
 import ir.maktab.model.repository.*;
 import ir.maktab.util.exceptions.DataBaseException;
-import ir.maktab.util.exceptions.ShoppingCardNotFound;
 import ir.maktab.util.exceptions.UserNotFoundException;
 import ir.maktab.util.exceptions.UserNotSignedUpException;
 
@@ -39,7 +38,7 @@ public class UserService implements PersonService {
             userRepo.signIn(user);
             return true;
         } catch (SQLException e) {
-            throw new DataBaseException(e.getMessage());//TODO what kind of exception could i handel here?
+            throw new DataBaseException(e.getMessage());
         } catch (UserNotFoundException e) {
             return false;
         }
@@ -73,14 +72,14 @@ public class UserService implements PersonService {
     }
 
     public ShoppingCard findShoppingCard(User user) {
-        ShoppingCard result = new ShoppingCard(user,ConfirmStatus.PENDING);
+        ShoppingCard result = new ShoppingCard(user, ConfirmStatus.PENDING);
         int shoppingCardID = 0;
         try {
-            shoppingCardID = shoppingCardRepo.findID(user.getUsername(),ConfirmStatus.PENDING);
+            shoppingCardID = shoppingCardRepo.findID(user.getUsername(), ConfirmStatus.PENDING);
         } catch (SQLException e) {
             throw new DataBaseException(e.getMessage());
         }
-        if(shoppingCardID == 0)
+        if (shoppingCardID == 0)
             return result;
         Map<Item, Integer> shoppingItemsMap = new HashMap<>();
         try {
@@ -88,7 +87,7 @@ public class UserService implements PersonService {
             shoppingItemsMap.putAll(Collections.unmodifiableMap(shoesRepo.findShoppingCardItems(shoppingCardID)));
             shoppingItemsMap.putAll(Collections.unmodifiableMap(readableRepo.findShoppingCardItems(shoppingCardID)));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataBaseException(e.getMessage());
         }
 
         result.setShoppingItemsMap(shoppingItemsMap);

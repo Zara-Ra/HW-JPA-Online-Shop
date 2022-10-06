@@ -71,25 +71,25 @@ public class ItemService {
     public void updateShopItemsCount(ShoppingCard shoppingCard, Map<ProductCategory, List<Item>> shopItems) {
         Map<Item, Integer> shoppingItemsMap = shoppingCard.getShoppingItemsMap();
         for (Map.Entry<Item, Integer> entry : shoppingItemsMap.entrySet()) {
-            int num = findItemInShop(entry.getKey(),shopItems);
-            switch (entry.getKey().getType().toPrdoductCategory()){
+            int num = findItemInShop(entry.getKey(), shopItems);
+            switch (entry.getKey().getType().toPrdoductCategory()) {
                 case ELECTRONICS:
                     try {
-                        electronicsRepo.editCount((Electronics) entry.getKey(),num);
+                        electronicsRepo.editCount((Electronics) entry.getKey(), num);
                     } catch (SQLException e) {
                         throw new DataBaseException(e.getMessage());
                     }
                     break;
                 case READABLE:
                     try {
-                        readableRepo.editCount((Readable) entry.getKey(),num);
+                        readableRepo.editCount((Readable) entry.getKey(), num);
                     } catch (SQLException e) {
                         throw new DataBaseException(e.getMessage());
                     }
                     break;
                 case SHOES:
                     try {
-                        shoesRepo.editCount((Shoes) entry.getKey(),num);
+                        shoesRepo.editCount((Shoes) entry.getKey(), num);
                     } catch (SQLException e) {
                         throw new DataBaseException(e.getMessage());
                     }
@@ -99,10 +99,10 @@ public class ItemService {
     }
 
     private int findItemInShop(Item item, Map<ProductCategory, List<Item>> shopItems) {
-        for (Map.Entry<ProductCategory,List<Item>> i: shopItems.entrySet()) {
+        for (Map.Entry<ProductCategory, List<Item>> i : shopItems.entrySet()) {
             List<Item> tempList = i.getValue();
             for (int j = 0; j < tempList.size(); j++) {
-                if(item.equals(tempList.get(j)))
+                if (item.equals(tempList.get(j)))
                     return tempList.get(j).getCount();
             }
         }
