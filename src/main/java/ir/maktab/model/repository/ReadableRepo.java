@@ -25,7 +25,7 @@ public class ReadableRepo extends AbstractItemRepo<Readable> {
         return instance;
     }
 
-    private DBhelper dBhelper = DBhelper.getInstance();
+    private final DBhelper dBhelper = DBhelper.getInstance();
 
     @Override
     public List<Readable> availableItems() throws SQLException {
@@ -45,11 +45,12 @@ public class ReadableRepo extends AbstractItemRepo<Readable> {
             item.setType(ItemType.valueOf(resultSet.getString(8)));
             items.add(item);
         }
+        dBhelper.closeConnection();
         return items;
     }
 
     public Map<Item, Integer> findShoppingCardItems(int shoppingCardID) throws SQLException {
-        Map<Item, Integer> resultShopingItemMap = new HashMap<>();
+        Map<Item, Integer> resultShoppingItemMap = new HashMap<>();
         String sql = "SELECT S.item_count,I.name,I.price,I.description,I.cover,I.age_range,I.num_page,I.type FROM \"shopping_items\" S JOIN \"item_readable\" I ON S.item_name = I.\"name\" WHERE S.shopping_card_id = ? ";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         preparedStatement.setInt(1, shoppingCardID);
@@ -65,8 +66,9 @@ public class ReadableRepo extends AbstractItemRepo<Readable> {
 
             ItemType type = ItemType.valueOf(resultSet.getString(8));
             Item item = new Readable(type, name, price, description, 0, cover, ageRange, numPage);
-            resultShopingItemMap.put(item, count);
+            resultShoppingItemMap.put(item, count);
         }
-        return resultShopingItemMap;
+        dBhelper.closeConnection();
+        return resultShoppingItemMap;
     }
 }

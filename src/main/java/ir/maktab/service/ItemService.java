@@ -58,7 +58,7 @@ public class ItemService {
     }
 
     public void increaseShopItemsCount(Map<ProductCategory, List<Item>> shopItems, Item item, Integer increaseNumber) {
-        List<Item> itemList = shopItems.get(item.getType().toPrdoductCategory());
+        List<Item> itemList = shopItems.get(item.getType().toProductCategory());
         for (int i = 0; i < itemList.size(); i++) {
             if (item.equals(itemList.get(i))) {
                 itemList.get(i).increaseCount(increaseNumber);
@@ -71,7 +71,7 @@ public class ItemService {
         Map<Item, Integer> shoppingItemsMap = shoppingCard.getShoppingItemsMap();
         for (Map.Entry<Item, Integer> entry : shoppingItemsMap.entrySet()) {
             int num = findItemInShop(entry.getKey(), shopItems);
-            switch (entry.getKey().getType().toPrdoductCategory()) {
+            switch (entry.getKey().getType().toProductCategory()) {
                 case ELECTRONICS:
                     try {
                         electronicsRepo.editCount((Electronics) entry.getKey(), num);

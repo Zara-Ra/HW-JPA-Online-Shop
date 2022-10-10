@@ -9,7 +9,6 @@ import ir.maktab.util.exceptions.UserNotFoundException;
 import ir.maktab.util.exceptions.UserNotSignedUpException;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,9 +83,9 @@ public class UserService implements PersonService {
             return result;
         Map<Item, Integer> shoppingItemsMap = new HashMap<>();
         try {
-            shoppingItemsMap.putAll(Collections.unmodifiableMap(electronicsRepo.findShoppingCardItems(shoppingCardID)));
-            shoppingItemsMap.putAll(Collections.unmodifiableMap(shoesRepo.findShoppingCardItems(shoppingCardID)));
-            shoppingItemsMap.putAll(Collections.unmodifiableMap(readableRepo.findShoppingCardItems(shoppingCardID)));
+            shoppingItemsMap.putAll(electronicsRepo.findShoppingCardItems(shoppingCardID));
+            shoppingItemsMap.putAll(shoesRepo.findShoppingCardItems(shoppingCardID));
+            shoppingItemsMap.putAll(readableRepo.findShoppingCardItems(shoppingCardID));
         } catch (SQLException e) {
             System.err.println("DataBase Error, Unable to find Shopping Card");
         }

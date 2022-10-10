@@ -10,12 +10,13 @@ public abstract class AbstractItemRepo<T extends Item> implements ItemRepo<T> {
     private final DBhelper dbhelper = DBhelper.getInstance();
 
     @Override
-    public boolean editCount(T item, int num) throws SQLException {
-        String tableName = item.getType().toPrdoductCategory().tableName();
+    public void editCount(T item, int num) throws SQLException {
+        String tableName = item.getType().toProductCategory().tableName();
         String sql = "UPDATE " + tableName + " SET count = ? WHERE name = ?";
         PreparedStatement preparedStatement = dbhelper.getConnection().prepareStatement(sql);
         preparedStatement.setInt(1, num);
         preparedStatement.setString(2, item.getName());
-        return preparedStatement.executeUpdate() > 0;
+        preparedStatement.executeUpdate();
+        dbhelper.closeConnection();
     }
 }

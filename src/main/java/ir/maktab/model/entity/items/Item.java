@@ -1,7 +1,6 @@
 package ir.maktab.model.entity.items;
 
 import ir.maktab.model.enums.ItemType;
-import ir.maktab.util.exceptions.ItemUnavailableException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,8 +22,7 @@ public abstract class Item {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Item)) return false;
-        Item item = (Item) o;
+        if (!(o instanceof Item item)) return false;
         return Double.compare(item.getPrice(), getPrice()) == 0 && getType() == item.getType() && Objects.equals(getName(), item.getName()) && Objects.equals(getDescription(), item.getDescription());
     }
 
@@ -34,12 +32,6 @@ public abstract class Item {
     }
 
     public Item() {
-    }
-
-    public boolean isAvailable() throws ItemUnavailableException {
-        if (this.count == 0)
-            throw new ItemUnavailableException("This Item is not currently available...");
-        return true;
     }
 
     public void countMinus() {

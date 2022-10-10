@@ -9,6 +9,6 @@ public interface ItemRepo<T extends Item> {
 
     List<T> availableItems() throws SQLException;
 
-    boolean editCount(T item, int num) throws SQLException;
+    void editCount(T item, int num) throws SQLException;
 
 }

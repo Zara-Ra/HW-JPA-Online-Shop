@@ -20,7 +20,7 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
     }
 
     private static final ShoesRepo instance = new ShoesRepo();
-    private DBhelper dBhelper = DBhelper.getInstance();
+    private final DBhelper dBhelper = DBhelper.getInstance();
 
     public static ShoesRepo getInstance() {
         return instance;
@@ -44,11 +44,12 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
             item.setType(ItemType.valueOf(resultSet.getString(8)));
             items.add(item);
         }
+        dBhelper.closeConnection();
         return items;
     }
 
     public Map<Item, Integer> findShoppingCardItems(int shoppingCardID) throws SQLException {
-        Map<Item, Integer> resultShopingItemMap = new HashMap<>();
+        Map<Item, Integer> resultShoppingItemMap = new HashMap<>();
         String sql = "SELECT S.item_count,I.name,I.price,I.description,I.color,I.gender,I.size,I.type FROM \"shopping_items\" S JOIN \"item_shoes\" I ON S.item_name = I.\"name\" WHERE S.shopping_card_id = ? ";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         preparedStatement.setInt(1, shoppingCardID);
@@ -64,8 +65,9 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
 
             ItemType type = ItemType.valueOf(resultSet.getString(8));
             Item item = new Shoes(type, name, price, description, 0, size, color, gender);
-            resultShopingItemMap.put(item, count);
+            resultShoppingItemMap.put(item, count);
         }
-        return resultShopingItemMap;
+        dBhelper.closeConnection();
+        return resultShoppingItemMap;
     }
 }

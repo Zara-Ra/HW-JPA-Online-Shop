@@ -23,7 +23,7 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
         return instance;
     }
 
-    private DBhelper dBhelper = DBhelper.getInstance();
+    private final DBhelper dBhelper = DBhelper.getInstance();
 
     @Override
     public List<Electronics> availableItems() throws SQLException {
@@ -41,11 +41,12 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
             item.setType(ItemType.valueOf(resultSet.getString(6)));
             items.add(item);
         }
+        dBhelper.closeConnection();
         return items;
     }
 
     public Map<Item, Integer> findShoppingCardItems(int shoppingCardID) throws SQLException {
-        Map<Item, Integer> resultShopingItemMap = new HashMap<>();
+        Map<Item, Integer> resultShoppingItemMap = new HashMap<>();
         String sql = "SELECT S.item_count,I.name,I.price,I.description,I.brand,I.type FROM \"shopping_items\" S JOIN \"item_electronics\" I ON S.item_name = I.\"name\" WHERE S.shopping_card_id = ? ";
         PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
         preparedStatement.setInt(1, shoppingCardID);
@@ -58,8 +59,9 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
             String brand = resultSet.getString(5);
             ItemType type = ItemType.valueOf(resultSet.getString(6));
             Item item = new Electronics(type, name, price, description, 0, brand);
-            resultShopingItemMap.put(item, count);
+            resultShoppingItemMap.put(item, count);
         }
-        return resultShopingItemMap;
+        dBhelper.closeConnection();
+        return resultShoppingItemMap;
     }
 }

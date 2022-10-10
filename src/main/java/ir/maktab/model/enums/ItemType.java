@@ -8,7 +8,7 @@ public enum ItemType {
     CASUAL,
     FORMAL;
 
-    public ProductCategory toPrdoductCategory() {
+    public ProductCategory toProductCategory() {
         switch (this) {
             case BOOK:
             case MAGAZINE:
