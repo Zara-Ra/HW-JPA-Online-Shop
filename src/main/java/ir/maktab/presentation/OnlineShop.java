@@ -126,11 +126,12 @@ public class OnlineShop {
             throw new ShoppingCardException("Shopping Card is Empty");
         } else {
             for (Map.Entry<Item, Integer> entry : shoppingItemMap.entrySet()) {
-                System.out.println("Number of Item: " + entry.getValue() + entry.getKey());
-                totalPrice += entry.getValue() * entry.getKey().getPrice();
+                double thisItemTotalPrice = entry.getValue() * entry.getKey().getPrice();
+                totalPrice += thisItemTotalPrice;
+                System.out.println("Number of Item: " + entry.getValue() +" Total: "+thisItemTotalPrice+ entry.getKey());
             }
             System.out.println("---------------------------------------------");
-            System.out.println("Total Price: " + totalPrice);
+            System.out.println("Total Price of Shopping Card: " + totalPrice);
         }
     }
 
@@ -240,13 +241,13 @@ public class OnlineShop {
         int itemNum;
         try {
             itemNum = Integer.parseInt(scanner.nextLine());
-            if (itemNum < 0 || itemNum >= itemList.size()) {
+            if (itemNum <= 0 || itemNum > itemList.size()) {
                 throw new NumberFormatException();
             }
-            if (itemList.get(itemNum).getCount() == 0) {
+            if (itemList.get(itemNum-1).getCount() == 0) {
                 throw new ItemUnavailableException("No More of this Item is Available");
             }
-            shoppingCardService.addItem(user, itemList.get(itemNum));
+            shoppingCardService.addItem(user, itemList.get(itemNum-1));
         } catch (NumberFormatException e) {
             System.err.println("Invalid Number Entered");
         } catch (ItemUnavailableException | ShoppingCardException e) {
@@ -262,8 +263,8 @@ public class OnlineShop {
     }
 
     private void printItems(List<Item> itemList) {
-        for (int j = 0; j < itemList.size(); j++) {
-            System.out.println(j + " " + itemList.get(j));
+        for (int j = 1; j <= itemList.size(); j++) {
+            System.out.println("No."+j + " " + itemList.get(j-1));
         }
     }
 
