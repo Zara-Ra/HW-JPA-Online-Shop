@@ -53,7 +53,8 @@ public class ShoppingCardService {
                 shoppingCardRepo.addShoppingCardItem(id, entry);
                 totalPrice += entry.getKey().getPrice() * entry.getValue();
             }
-            shoppingCardRepo.updateTotalPrice(id, totalPrice);
+            if(shoppingCard.getConfirmStatus() != ConfirmStatus.DELETE)
+                shoppingCardRepo.updateTotalPrice(id, totalPrice);
         } catch (SQLException e) {
             System.err.println("DataBase Error,Confirming Shopping");
         }

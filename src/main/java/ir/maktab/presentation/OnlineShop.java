@@ -328,7 +328,7 @@ public class OnlineShop {
                 break;
             case DELETE:
                 user.getShoppingCard().getShoppingItemsMap().clear();
-                //todo check change db confirm status
+                shoppingCardService.confirmShopping(user.getShoppingCard());
                 shopItems.clear();
                 System.out.println("Shopping Card Deleted");
                 break;
