@@ -53,10 +53,12 @@ public class ShoppingCardService {
         try {
             int id = shoppingCardRepo.findID(shoppingCard.getUser().getUsername(), ConfirmStatus.PENDING);
             if (id != 0) {
-                //shoppingCardRepo.deleteShoppingCard(id);
-
+                shoppingCardRepo.deleteShoppingCard(id);
+                //is it rational to compare the previous card with the current card and edit the database?
+                //or simply delete the card so all the referenced data is deleted and add the new card all over again?
+                //sorry for the comment, I barely connect to telegram!
+                //ShoppingCard prevShoppingCard = findShoppingCard(shoppingCard.getUser());
             }
-            //else
             shoppingCardRepo.insertShoppingCard(shoppingCard);
             id = shoppingCardRepo.findID(shoppingCard.getUser().getUsername(), shoppingCard.getConfirmStatus());
             for (Map.Entry<Item, Integer> entry : shoppingCard.getShoppingItemsMap().entrySet()) {

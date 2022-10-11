@@ -128,7 +128,7 @@ public class OnlineShop {
             for (Map.Entry<Item, Integer> entry : shoppingItemMap.entrySet()) {
                 double thisItemTotalPrice = entry.getValue() * entry.getKey().getPrice();
                 totalPrice += thisItemTotalPrice;
-                System.out.println("Number of Item: " + entry.getValue() +" Total: "+thisItemTotalPrice+ entry.getKey());
+                System.out.println("Quantity: " + entry.getValue() +" Total: "+thisItemTotalPrice+ entry.getKey());
             }
             System.out.println("---------------------------------------------");
             System.out.println("Total Price of Shopping Card: " + totalPrice);
