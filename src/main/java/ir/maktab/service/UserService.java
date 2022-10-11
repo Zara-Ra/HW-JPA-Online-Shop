@@ -23,11 +23,6 @@ public class UserService implements PersonService {
     }
 
     private final UserRepo userRepo = UserRepo.getInstance();
-    private final ShoppingCardRepo shoppingCardRepo = ShoppingCardRepo.getInstance();
-    ElectronicsRepo electronicsRepo = ElectronicsRepo.getInstance();
-    ReadableRepo readableRepo = ReadableRepo.getInstance();
-    ShoesRepo shoesRepo = ShoesRepo.getInstance();
-
 
     @Override
     public boolean signIn(User user) {
@@ -71,26 +66,4 @@ public class UserService implements PersonService {
         return null;
     }
 
-    public ShoppingCard findShoppingCard(User user) {
-        ShoppingCard result = new ShoppingCard(user, ConfirmStatus.PENDING);
-        int shoppingCardID = 0;
-        try {
-            shoppingCardID = shoppingCardRepo.findID(user.getUsername(), ConfirmStatus.PENDING);
-        } catch (SQLException e) {
-            System.err.println("DataBase Error, Unable to find Shopping Card");
-        }
-        if (shoppingCardID == 0)
-            return result;
-        Map<Item, Integer> shoppingItemsMap = new HashMap<>();
-        try {
-            shoppingItemsMap.putAll(electronicsRepo.findShoppingCardItems(shoppingCardID));
-            shoppingItemsMap.putAll(shoesRepo.findShoppingCardItems(shoppingCardID));
-            shoppingItemsMap.putAll(readableRepo.findShoppingCardItems(shoppingCardID));
-        } catch (SQLException e) {
-            System.err.println("DataBase Error, Unable to find Shopping Card");
-        }
-
-        result.setShoppingItemsMap(shoppingItemsMap);
-        return result;
-    }
 }

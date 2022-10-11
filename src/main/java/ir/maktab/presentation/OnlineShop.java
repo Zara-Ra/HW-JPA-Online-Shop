@@ -21,7 +21,7 @@ public class OnlineShop {
     private final UserService userService = UserService.getInstance();
     private final ItemService itemService = ItemService.getInstance();
     private final ShoppingCardService shoppingCardService = ShoppingCardService.getInstance();
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
     private User user;
     private Map<ProductCategory, List<Item>> shopItems = new HashMap<>();
 
@@ -347,7 +347,7 @@ public class OnlineShop {
             UserValidate.Validate(password);
             user = new User(username, password);
             if (userService.signIn(user)) {
-                ShoppingCard shoppingCard = userService.findShoppingCard(user);
+                ShoppingCard shoppingCard = shoppingCardService.findShoppingCard(user);
                 user.setShoppingCard(shoppingCard);
                 System.out.println("Signed In Successfully");
                 signInResult = true;

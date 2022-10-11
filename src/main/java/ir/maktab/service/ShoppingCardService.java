@@ -4,10 +4,14 @@ import ir.maktab.model.entity.ShoppingCard;
 import ir.maktab.model.entity.User;
 import ir.maktab.model.entity.items.Item;
 import ir.maktab.model.enums.ConfirmStatus;
+import ir.maktab.model.repository.ElectronicsRepo;
+import ir.maktab.model.repository.ReadableRepo;
+import ir.maktab.model.repository.ShoesRepo;
 import ir.maktab.model.repository.ShoppingCardRepo;
 import ir.maktab.util.exceptions.ShoppingCardException;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -22,6 +26,10 @@ public class ShoppingCardService {
     }
 
     private final ShoppingCardRepo shoppingCardRepo = ShoppingCardRepo.getInstance();
+    ElectronicsRepo electronicsRepo = ElectronicsRepo.getInstance();
+    ReadableRepo readableRepo = ReadableRepo.getInstance();
+    ShoesRepo shoesRepo = ShoesRepo.getInstance();
+
 
     public void addItem(User user, Item item) throws ShoppingCardException {
         Map<Item, Integer> shoppingItemsMap = user.getShoppingCard().getShoppingItemsMap();
@@ -45,8 +53,10 @@ public class ShoppingCardService {
         try {
             int id = shoppingCardRepo.findID(shoppingCard.getUser().getUsername(), ConfirmStatus.PENDING);
             if (id != 0) {
-                shoppingCardRepo.deleteShoppingCard(id);
+                //shoppingCardRepo.deleteShoppingCard(id);
+
             }
+            //else
             shoppingCardRepo.insertShoppingCard(shoppingCard);
             id = shoppingCardRepo.findID(shoppingCard.getUser().getUsername(), shoppingCard.getConfirmStatus());
             for (Map.Entry<Item, Integer> entry : shoppingCard.getShoppingItemsMap().entrySet()) {
@@ -58,6 +68,28 @@ public class ShoppingCardService {
         } catch (SQLException e) {
             System.err.println("DataBase Error,Confirming Shopping");
         }
+    }
+    public ShoppingCard findShoppingCard(User user) {
+        ShoppingCard result = new ShoppingCard(user, ConfirmStatus.PENDING);
+        int shoppingCardID = 0;
+        try {
+            shoppingCardID = shoppingCardRepo.findID(user.getUsername(), ConfirmStatus.PENDING);
+        } catch (SQLException e) {
+            System.err.println("DataBase Error, Unable to find Shopping Card");
+        }
+        if (shoppingCardID == 0)
+            return result;
+        Map<Item, Integer> shoppingItemsMap = new HashMap<>();
+        try {
+            shoppingItemsMap.putAll(electronicsRepo.findShoppingCardItems(shoppingCardID));
+            shoppingItemsMap.putAll(shoesRepo.findShoppingCardItems(shoppingCardID));
+            shoppingItemsMap.putAll(readableRepo.findShoppingCardItems(shoppingCardID));
+        } catch (SQLException e) {
+            System.err.println("DataBase Error, Unable to find Shopping Card");
+        }
+
+        result.setShoppingItemsMap(shoppingItemsMap);
+        return result;
     }
 
     public void editNumOfItem(Map<Item, Integer> shoppingItemMap, Item item, int num) {
