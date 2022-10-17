@@ -1,6 +1,7 @@
-package ir.maktab.model.repository;
+package ir.maktab.model.repository.Impl;
 
 import ir.maktab.model.entity.User;
+import ir.maktab.model.repository.PersonRepo;
 import ir.maktab.util.DBhelper;
 import ir.maktab.util.exceptions.UserNotFoundException;
 import ir.maktab.util.exceptions.UserNotSignedUpException;
@@ -9,14 +10,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserRepo implements PersonRepo {
+public class PersonrRepoImpl implements PersonRepo {
 
-    private UserRepo() {
+    private PersonrRepoImpl() {
     }
 
-    private static final UserRepo instance = new UserRepo();
+    private static final PersonrRepoImpl instance = new PersonrRepoImpl();
 
-    public static UserRepo getInstance() {
+    public static PersonrRepoImpl getInstance() {
         return instance;
     }
 

@@ -1,13 +1,14 @@
-package ir.maktab.model.repository;
+package ir.maktab.model.repository.Impl;
 
 import ir.maktab.model.entity.items.Item;
+import ir.maktab.model.repository.ItemRepo;
 import ir.maktab.util.DBhelper;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public abstract class AbstractItemRepo<T extends Item> implements ItemRepo<T> {
-    private final DBhelper dbhelper = DBhelper.getInstance();
+    protected final DBhelper dbhelper = DBhelper.getInstance();
 
     @Override
     public void editCount(T item, int num) throws SQLException {

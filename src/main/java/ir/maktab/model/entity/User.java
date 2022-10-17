@@ -12,7 +12,7 @@ import lombok.Setter;
 public class User {
     private String username;
     private String password;
-    private ShoppingCard shoppingCard;
+    private ShoppingCard shoppingCard;//unnecessary can keep this relation just in shopping card
 
     public User(String username, String password) {
         this.username = username;

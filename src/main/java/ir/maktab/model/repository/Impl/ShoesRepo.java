@@ -1,11 +1,10 @@
-package ir.maktab.model.repository;
+package ir.maktab.model.repository.Impl;
 
 import ir.maktab.model.entity.items.Item;
 import ir.maktab.model.entity.items.Shoes;
 import ir.maktab.model.enums.Color;
 import ir.maktab.model.enums.Gender;
 import ir.maktab.model.enums.ItemType;
-import ir.maktab.util.DBhelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +19,6 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
     }
 
     private static final ShoesRepo instance = new ShoesRepo();
-    private final DBhelper dBhelper = DBhelper.getInstance();
 
     public static ShoesRepo getInstance() {
         return instance;
@@ -29,7 +27,7 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
     @Override
     public List<Shoes> availableItems() throws SQLException {
         String sql = "SELECT name,count,price,description,color,gender,size,type FROM item_shoes WHERE count > 0";
-        PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
+        PreparedStatement preparedStatement = dbhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Shoes> items = new ArrayList<>();
         while (resultSet.next()) {
@@ -44,14 +42,14 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
             item.setType(ItemType.valueOf(resultSet.getString(8)));
             items.add(item);
         }
-        dBhelper.closeConnection();
+        dbhelper.closeConnection();
         return items;
     }
 
     public Map<Item, Integer> findShoppingCardItems(int shoppingCardID) throws SQLException {
         Map<Item, Integer> resultShoppingItemMap = new HashMap<>();
         String sql = "SELECT S.item_count,I.name,I.price,I.description,I.color,I.gender,I.size,I.type FROM \"shopping_items\" S JOIN \"item_shoes\" I ON S.item_name = I.\"name\" WHERE S.shopping_card_id = ? ";
-        PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
+        PreparedStatement preparedStatement = dbhelper.getConnection().prepareStatement(sql);
         preparedStatement.setInt(1, shoppingCardID);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
@@ -67,7 +65,7 @@ public class ShoesRepo extends AbstractItemRepo<Shoes> {
             Item item = new Shoes(type, name, price, description, 0, size, color, gender);
             resultShoppingItemMap.put(item, count);
         }
-        dBhelper.closeConnection();
+        dbhelper.closeConnection();
         return resultShoppingItemMap;
     }
 }

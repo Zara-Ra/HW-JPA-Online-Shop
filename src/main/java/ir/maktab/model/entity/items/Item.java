@@ -31,7 +31,7 @@ public abstract class Item {
         return Objects.hash(getType(), getName(), getPrice(), getDescription());
     }
 
-    public Item() {
+    protected Item() {//Constructor of an abstract class can never be called, except in extended classes so access modifier could be protected
     }
 
     public void countMinus() {

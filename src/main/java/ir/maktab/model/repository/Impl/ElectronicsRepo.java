@@ -1,9 +1,8 @@
-package ir.maktab.model.repository;
+package ir.maktab.model.repository.Impl;
 
 import ir.maktab.model.entity.items.Electronics;
 import ir.maktab.model.entity.items.Item;
 import ir.maktab.model.enums.ItemType;
-import ir.maktab.util.DBhelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,12 +22,10 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
         return instance;
     }
 
-    private final DBhelper dBhelper = DBhelper.getInstance();
-
     @Override
     public List<Electronics> availableItems() throws SQLException {
         String sql = "SELECT name,count,price,description,brand,type FROM item_electronics WHERE count > 0";
-        PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
+        PreparedStatement preparedStatement = dbhelper.getConnection().prepareStatement(sql);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<Electronics> items = new ArrayList<>();
         while (resultSet.next()) {
@@ -41,14 +38,14 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
             item.setType(ItemType.valueOf(resultSet.getString(6)));
             items.add(item);
         }
-        dBhelper.closeConnection();
+        dbhelper.closeConnection();
         return items;
     }
 
     public Map<Item, Integer> findShoppingCardItems(int shoppingCardID) throws SQLException {
         Map<Item, Integer> resultShoppingItemMap = new HashMap<>();
         String sql = "SELECT S.item_count,I.name,I.price,I.description,I.brand,I.type FROM \"shopping_items\" S JOIN \"item_electronics\" I ON S.item_name = I.\"name\" WHERE S.shopping_card_id = ? ";
-        PreparedStatement preparedStatement = dBhelper.getConnection().prepareStatement(sql);
+        PreparedStatement preparedStatement = dbhelper.getConnection().prepareStatement(sql);
         preparedStatement.setInt(1, shoppingCardID);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
@@ -61,7 +58,7 @@ public class ElectronicsRepo extends AbstractItemRepo<Electronics> {
             Item item = new Electronics(type, name, price, description, 0, brand);
             resultShoppingItemMap.put(item, count);
         }
-        dBhelper.closeConnection();
+        dbhelper.closeConnection();
         return resultShoppingItemMap;
     }
 }

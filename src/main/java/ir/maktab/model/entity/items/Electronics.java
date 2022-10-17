@@ -17,7 +17,7 @@ public class Electronics extends Item {
         this.brand = brand;
     }
 
-    private String brand;
+    private String brand;//Could be enum
 
     @Override
     public String toString() {

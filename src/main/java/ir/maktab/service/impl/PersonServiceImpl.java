@@ -1,34 +1,30 @@
-package ir.maktab.service;
+package ir.maktab.service.impl;
 
-import ir.maktab.model.entity.ShoppingCard;
 import ir.maktab.model.entity.User;
-import ir.maktab.model.entity.items.Item;
-import ir.maktab.model.enums.ConfirmStatus;
-import ir.maktab.model.repository.*;
+import ir.maktab.model.repository.Impl.PersonrRepoImpl;
+import ir.maktab.service.PersonService;
 import ir.maktab.util.exceptions.UserNotFoundException;
 import ir.maktab.util.exceptions.UserNotSignedUpException;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
-public class UserService implements PersonService {
-    private UserService() {
+public class PersonServiceImpl implements PersonService {
+    private PersonServiceImpl() {
     }
 
-    private static final UserService instance = new UserService();
+    private static final PersonServiceImpl instance = new PersonServiceImpl();
 
-    public static UserService getInstance() {
+    public static PersonServiceImpl getInstance() {
         return instance;
     }
 
-    private final UserRepo userRepo = UserRepo.getInstance();
+    private final PersonrRepoImpl personrRepoImpl = PersonrRepoImpl.getInstance();
 
     @Override
     public boolean signIn(User user) {
         checkUser(user);
         try {
-            userRepo.signIn(user);
+            personrRepoImpl.signIn(user);
             return true;
         } catch (SQLException e) {
             System.err.println("DataBase Error, Sign in");
@@ -42,7 +38,7 @@ public class UserService implements PersonService {
     public boolean signUp(User user) {
         checkUser(user);
         try {
-            userRepo.signUp(user);
+            personrRepoImpl.signUp(user);
             return true;
         } catch (SQLException e) {
             System.err.println("DataBase Error, Sign up");
