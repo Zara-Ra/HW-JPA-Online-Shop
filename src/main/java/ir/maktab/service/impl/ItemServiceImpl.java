@@ -6,9 +6,9 @@ import ir.maktab.model.entity.items.Item;
 import ir.maktab.model.entity.items.Readable;
 import ir.maktab.model.entity.items.Shoes;
 import ir.maktab.model.enums.ProductCategory;
-import ir.maktab.model.repository.Impl.ElectronicsRepo;
-import ir.maktab.model.repository.Impl.ReadableRepo;
-import ir.maktab.model.repository.Impl.ShoesRepo;
+import ir.maktab.model.repository.impl.ElectronicsRepo;
+import ir.maktab.model.repository.impl.ReadableRepo;
+import ir.maktab.model.repository.impl.ShoesRepo;
 import ir.maktab.service.ItemService;
 
 import java.sql.SQLException;
@@ -17,19 +17,18 @@ import java.util.List;
 import java.util.Map;
 
 public class ItemServiceImpl implements ItemService {
+    private static final ItemServiceImpl instance = new ItemServiceImpl();
+    ElectronicsRepo electronicsRepo = ElectronicsRepo.getInstance();
+    ReadableRepo readableRepo = ReadableRepo.getInstance();
+    ShoesRepo shoesRepo = ShoesRepo.getInstance();
     private ItemServiceImpl() {
     }
-
-    private static final ItemServiceImpl instance = new ItemServiceImpl();
 
     public static ItemServiceImpl getInstance() {
         return instance;
     }
 
-    ElectronicsRepo electronicsRepo = ElectronicsRepo.getInstance();
-    ReadableRepo readableRepo = ReadableRepo.getInstance();
-    ShoesRepo shoesRepo = ShoesRepo.getInstance();
-
+    @Override
     public List<Item> itemsByCategory(ProductCategory productCategory) {
         List<Item> itemList = new ArrayList<>();
         switch (productCategory) {
@@ -58,16 +57,18 @@ public class ItemServiceImpl implements ItemService {
         return itemList;
     }
 
+    @Override
     public void increaseShopItemsCount(Map<ProductCategory, List<Item>> shopItems, Item item, Integer increaseNumber) {
         List<Item> itemList = shopItems.get(item.getType().toProductCategory());
-        for (int i = 0; i < itemList.size(); i++) {
-            if (item.equals(itemList.get(i))) {
-                itemList.get(i).increaseCount(increaseNumber);
+        for (Item value : itemList) {
+            if (item.equals(value)) {
+                value.increaseCount(increaseNumber);
                 return;
             }
         }
     }
 
+    @Override
     public void updateShopItemsCount(ShoppingCard shoppingCard, Map<ProductCategory, List<Item>> shopItems) {
         Map<Item, Integer> shoppingItemsMap = shoppingCard.getShoppingItemsMap();
         for (Map.Entry<Item, Integer> entry : shoppingItemsMap.entrySet()) {
@@ -98,12 +99,13 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+    @Override
     public int findItemInShop(Item item, Map<ProductCategory, List<Item>> shopItems) {
         for (Map.Entry<ProductCategory, List<Item>> i : shopItems.entrySet()) {
             List<Item> tempList = i.getValue();
-            for (int j = 0; j < tempList.size(); j++) {
-                if (item.equals(tempList.get(j)))
-                    return tempList.get(j).getCount();
+            for (Item value : tempList) {
+                if (item.equals(value))
+                    return value.getCount();
             }
         }
         return 0;

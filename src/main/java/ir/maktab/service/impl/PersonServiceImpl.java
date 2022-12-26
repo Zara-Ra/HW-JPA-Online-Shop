@@ -1,7 +1,7 @@
 package ir.maktab.service.impl;
 
 import ir.maktab.model.entity.User;
-import ir.maktab.model.repository.Impl.PersonrRepoImpl;
+import ir.maktab.model.repository.impl.PersonRepoImpl;
 import ir.maktab.service.PersonService;
 import ir.maktab.util.exceptions.UserNotFoundException;
 import ir.maktab.util.exceptions.UserNotSignedUpException;
@@ -9,22 +9,21 @@ import ir.maktab.util.exceptions.UserNotSignedUpException;
 import java.sql.SQLException;
 
 public class PersonServiceImpl implements PersonService {
+    private static final PersonServiceImpl instance = new PersonServiceImpl();
+    private final PersonRepoImpl personRepoImpl = PersonRepoImpl.getInstance();
+
     private PersonServiceImpl() {
     }
-
-    private static final PersonServiceImpl instance = new PersonServiceImpl();
 
     public static PersonServiceImpl getInstance() {
         return instance;
     }
 
-    private final PersonrRepoImpl personrRepoImpl = PersonrRepoImpl.getInstance();
-
     @Override
     public boolean signIn(User user) {
         checkUser(user);
         try {
-            personrRepoImpl.signIn(user);
+            personRepoImpl.signIn(user);
             return true;
         } catch (SQLException e) {
             System.err.println("DataBase Error, Sign in");
@@ -38,7 +37,7 @@ public class PersonServiceImpl implements PersonService {
     public boolean signUp(User user) {
         checkUser(user);
         try {
-            personrRepoImpl.signUp(user);
+            personRepoImpl.signUp(user);
             return true;
         } catch (SQLException e) {
             System.err.println("DataBase Error, Sign up");

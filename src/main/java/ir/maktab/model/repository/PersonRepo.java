@@ -7,7 +7,7 @@ import ir.maktab.util.exceptions.UserNotSignedUpException;
 import java.sql.SQLException;
 
 public interface PersonRepo {
-    void signIn(User user) throws SQLException, UserNotFoundException;
+    void signIn(User user) throws SQLException, UserNotFoundException;//
 
-    User signUp(User user) throws SQLException, UserNotSignedUpException;
+    User signUp(User user) throws SQLException, UserNotSignedUpException;//save
 }

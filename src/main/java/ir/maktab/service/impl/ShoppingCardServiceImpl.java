@@ -4,10 +4,10 @@ import ir.maktab.model.entity.ShoppingCard;
 import ir.maktab.model.entity.User;
 import ir.maktab.model.entity.items.Item;
 import ir.maktab.model.enums.ConfirmStatus;
-import ir.maktab.model.repository.Impl.ElectronicsRepo;
-import ir.maktab.model.repository.Impl.ReadableRepo;
-import ir.maktab.model.repository.Impl.ShoesRepo;
-import ir.maktab.model.repository.Impl.ShoppingCardRepoImpl;
+import ir.maktab.model.repository.impl.ElectronicsRepo;
+import ir.maktab.model.repository.impl.ReadableRepo;
+import ir.maktab.model.repository.impl.ShoesRepo;
+import ir.maktab.model.repository.impl.ShoppingCardRepoImpl;
 import ir.maktab.service.ShoppingCardService;
 import ir.maktab.util.exceptions.ShoppingCardException;
 
@@ -17,21 +17,19 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ShoppingCardServiceImpl implements ShoppingCardService {
+    private static final ShoppingCardServiceImpl instance = new ShoppingCardServiceImpl();
+    private final ShoppingCardRepoImpl shoppingCardRepoImpl = ShoppingCardRepoImpl.getInstance();
+    ElectronicsRepo electronicsRepo = ElectronicsRepo.getInstance();
+    ReadableRepo readableRepo = ReadableRepo.getInstance();
+    ShoesRepo shoesRepo = ShoesRepo.getInstance();
     private ShoppingCardServiceImpl() {
     }
-
-    private static final ShoppingCardServiceImpl instance = new ShoppingCardServiceImpl();
 
     public static ShoppingCardServiceImpl getInstance() {
         return instance;
     }
 
-    private final ShoppingCardRepoImpl shoppingCardRepoImpl = ShoppingCardRepoImpl.getInstance();
-    ElectronicsRepo electronicsRepo = ElectronicsRepo.getInstance();
-    ReadableRepo readableRepo = ReadableRepo.getInstance();
-    ShoesRepo shoesRepo = ShoesRepo.getInstance();
-
-
+    @Override
     public void addItem(User user, Item item) throws ShoppingCardException {
         Map<Item, Integer> shoppingItemsMap = user.getShoppingCard().getShoppingItemsMap();
         Integer numOfItem = 1;
@@ -45,10 +43,12 @@ public class ShoppingCardServiceImpl implements ShoppingCardService {
         item.countMinus();
     }
 
+    @Override
     public void removeItem(Iterator iterator) {
         iterator.remove();
     }
 
+    @Override
     public void confirmShopping(ShoppingCard shoppingCard) {
         double totalPrice = 0;
         try {
@@ -66,12 +66,14 @@ public class ShoppingCardServiceImpl implements ShoppingCardService {
                 shoppingCardRepoImpl.addShoppingCardItem(id, entry);
                 totalPrice += entry.getKey().getPrice() * entry.getValue();
             }
-            if(shoppingCard.getConfirmStatus() != ConfirmStatus.DELETE)
+            if (shoppingCard.getConfirmStatus() != ConfirmStatus.DELETE)
                 shoppingCardRepoImpl.updateTotalPrice(id, totalPrice);
         } catch (SQLException e) {
             System.err.println("DataBase Error,Confirming Shopping");
         }
     }
+
+    @Override
     public ShoppingCard findShoppingCard(User user) {
         ShoppingCard result = new ShoppingCard(user, ConfirmStatus.PENDING);
         int shoppingCardID = 0;
@@ -95,6 +97,7 @@ public class ShoppingCardServiceImpl implements ShoppingCardService {
         return result;
     }
 
+    @Override
     public void editNumOfItem(Map<Item, Integer> shoppingItemMap, Item item, int num) {
         shoppingItemMap.replace(item, num);
     }

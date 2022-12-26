@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +14,14 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
+
 public class ShoppingCard {
+
+    private int id;
     private User user;
+
     private Map<Item, Integer> shoppingItemsMap = new HashMap<>();
+
     private ConfirmStatus confirmStatus;
     private Date date;
     private double totalPrice;

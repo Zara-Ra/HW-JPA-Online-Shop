@@ -11,7 +11,7 @@ import java.util.Map;
 public interface ShoppingCardService {
     void addItem(User user, Item item) throws ShoppingCardException;
 
-    void removeItem(Iterator iterator);
+    void removeItem(Iterator<Item> iterator);
 
     void confirmShopping(ShoppingCard shoppingCard);
 

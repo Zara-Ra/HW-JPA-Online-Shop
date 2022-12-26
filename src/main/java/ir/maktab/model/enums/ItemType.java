@@ -10,14 +10,11 @@ public enum ItemType {
 
     public ProductCategory toProductCategory() {
         switch (this) {
-            case BOOK:
-            case MAGAZINE:
+            case BOOK, MAGAZINE:
                 return ProductCategory.READABLE;
-            case TV:
-            case RADIO:
+            case TV, RADIO:
                 return ProductCategory.ELECTRONICS;
-            case CASUAL:
-            case FORMAL:
+            case CASUAL, FORMAL:
                 return ProductCategory.SHOES;
             default:
                 return null;
